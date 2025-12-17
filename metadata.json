@@ -1,0 +1,20 @@
+{
+  "name": "Gitlab Time Tracking",
+  "description": "Track time spent on GitLab issues with a convenient system tray timer",
+  "uuid": "gitlab-time-tracker@gecka.nc",
+  "shell-version": [
+    "46",
+    "47",
+    "48",
+    "49"
+  ],
+  "version": 1,
+  "version-name": "1.0.0",
+  "url": "https://github.com/Gecka-Apps/gitlab-time-tracker",
+  "settings-schema": "org.gnome.shell.extensions.gitlab-time-tracker",
+  "original-authors": [
+    "Gecka <contact@gecka.nc>"
+  ],
+  "license": "GPL-3.0-or-later",
+  "gettext-domain": "gitlab-time-tracker@gecka.nc"
+}

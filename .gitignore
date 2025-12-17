@@ -1,0 +1,21 @@
+# Build directory
+/build/
+
+# Editor temporary files
+*~
+.idea/
+.vscode/
+
+# TypeScript/JS development files
+.ts-for-gir.js
+jsconfig.json
+@types/
+
+# Compiled schema
+schemas/gschemas.compiled
+
+# Compiled translation files (MO files)
+po/*.mo
+
+# Localization directories (generated during build)
+locale/

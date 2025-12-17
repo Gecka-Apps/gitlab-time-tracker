@@ -1,0 +1,23 @@
+/* GitLab Issues Timer Extension Stylesheet */
+
+.gitlab-timer-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.gitlab-project-label,
+.gitlab-issue-label {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.popup-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Theme-aware icon coloring */
+.system-status-icon {
+    icon-size: 16px;
+    -st-icon-style: symbolic;
+}

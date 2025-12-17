@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab-time-tracker@gecka.nc\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-16 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "GitLab Issues Timer"
+msgstr ""
+
+msgid "Please configure the server URL and token in preferences"
+msgstr ""
+
+msgid "Select project & issue"
+msgstr ""
+
+msgid "Project: None"
+msgstr ""
+
+msgid "Issue: None"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Pause"
+msgstr ""
+
+msgid "Stop & Send"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Issue"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Unable to open selector"
+msgstr ""
+
+msgid "Please select a project and an issue"
+msgstr ""
+
+msgid "Resume"
+msgstr ""
+
+msgid "Timer cancelled"
+msgstr ""
+
+msgid "Time sent"
+msgstr ""
+
+msgid "on issue"
+msgstr ""
+
+msgid "Unable to send time"
+msgstr ""
+
+msgid "Error sending time"
+msgstr ""
+
+msgid "Extension not found"
+msgstr ""
+
+msgid "Unable to open preferences"
+msgstr ""
+
+msgid "Open project in browser"
+msgstr ""
+
+msgid "Open issue in browser"
+msgstr ""
+
+msgid "No project selected"
+msgstr ""
+
+msgid "No issue selected"
+msgstr ""
+
+msgid "Unable to open browser"
+msgstr ""
+
+msgid "Select a project and an issue"
+msgstr ""
+
+msgid "Search project..."
+msgstr ""
+
+msgid "Search issue..."
+msgstr ""
+
+msgid "Loading..."
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "GitLab Time Tracking"
+msgstr ""
+
+msgid "Monthly Report"
+msgstr ""
+
+msgid "Monthly Time Report"
+msgstr ""
+
+msgid "Select a project..."
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "February"
+msgstr ""
+
+msgid "March"
+msgstr ""
+
+msgid "April"
+msgstr ""
+
+msgid "May"
+msgstr ""
+
+msgid "June"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "August"
+msgstr ""
+
+msgid "September"
+msgstr ""
+
+msgid "October"
+msgstr ""
+
+msgid "November"
+msgstr ""
+
+msgid "December"
+msgstr ""
+
+msgid "Export Markdown"
+msgstr ""
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Total time"
+msgstr ""
+
+msgid "Issues"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "No time tracked for this period"
+msgstr ""
+
+msgid "No projects available"
+msgstr ""
+
+msgid "Unable to load projects"
+msgstr ""
+
+msgid "Error loading projects"
+msgstr ""
+
+msgid "Unable to load report"
+msgstr ""
+
+msgid "Error loading report"
+msgstr ""
+
+msgid "No data to export"
+msgstr ""
+
+msgid "Report exported"
+msgstr ""
+
+msgid "Unable to export"
+msgstr ""
+
+msgid "Unable to open report"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "No label"
+msgstr ""

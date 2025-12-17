@@ -1,0 +1,218 @@
+# German translation for gitlab-time-tracker@gecka.nc
+# Copyright (C) 2025
+# This file is distributed under the same license as the gitlab-time-tracker@gecka.nc package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab-time-tracker@gecka.nc\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-16 12:00+0000\n"
+"PO-Revision-Date: 2025-01-16 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "GitLab Issues Timer"
+msgstr "GitLab Issues Timer"
+
+msgid "Please configure the server URL and token in preferences"
+msgstr "Bitte konfigurieren Sie die Server-URL und das Token in den Einstellungen"
+
+msgid "Select project & issue"
+msgstr "Projekt & Issue auswählen"
+
+msgid "Project: None"
+msgstr "Projekt: Keins"
+
+msgid "Issue: None"
+msgstr "Issue: Keine"
+
+msgid "Start"
+msgstr "Starten"
+
+msgid "Pause"
+msgstr "Pausieren"
+
+msgid "Stop & Send"
+msgstr "Stoppen & Senden"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Project"
+msgstr "Projekt"
+
+msgid "Issue"
+msgstr "Issue"
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid "Unable to open selector"
+msgstr "Auswahl kann nicht geöffnet werden"
+
+msgid "Please select a project and an issue"
+msgstr "Bitte wählen Sie ein Projekt und eine Issue aus"
+
+msgid "Resume"
+msgstr "Fortsetzen"
+
+msgid "Timer cancelled"
+msgstr "Timer abgebrochen"
+
+msgid "Time sent"
+msgstr "Zeit gesendet"
+
+msgid "on issue"
+msgstr "auf Issue"
+
+msgid "Unable to send time"
+msgstr "Zeit kann nicht gesendet werden"
+
+msgid "Error sending time"
+msgstr "Fehler beim Senden der Zeit"
+
+msgid "Extension not found"
+msgstr "Erweiterung nicht gefunden"
+
+msgid "Unable to open preferences"
+msgstr "Einstellungen können nicht geöffnet werden"
+
+msgid "Open project in browser"
+msgstr "Projekt im Browser öffnen"
+
+msgid "Open issue in browser"
+msgstr "Issue im Browser öffnen"
+
+msgid "No project selected"
+msgstr "Kein Projekt ausgewählt"
+
+msgid "No issue selected"
+msgstr "Keine Issue ausgewählt"
+
+msgid "Unable to open browser"
+msgstr "Browser kann nicht geöffnet werden"
+
+msgid "Select a project and an issue"
+msgstr "Ein Projekt und eine Issue auswählen"
+
+msgid "Search project..."
+msgstr "Projekt suchen..."
+
+msgid "Search issue..."
+msgstr "Issue suchen..."
+
+msgid "Loading..."
+msgstr "Laden..."
+
+msgid "Select"
+msgstr "Auswählen"
+
+msgid "GitLab Time Tracking"
+msgstr "GitLab Zeiterfassung"
+
+msgid "Monthly Report"
+msgstr "Monatsbericht"
+
+msgid "Monthly Time Report"
+msgstr "Monatlicher Zeitbericht"
+
+msgid "Select a project..."
+msgstr "Ein Projekt auswählen..."
+
+msgid "January"
+msgstr "Januar"
+
+msgid "February"
+msgstr "Februar"
+
+msgid "March"
+msgstr "März"
+
+msgid "April"
+msgstr "April"
+
+msgid "May"
+msgstr "Mai"
+
+msgid "June"
+msgstr "Juni"
+
+msgid "July"
+msgstr "Juli"
+
+msgid "August"
+msgstr "August"
+
+msgid "September"
+msgstr "September"
+
+msgid "October"
+msgstr "Oktober"
+
+msgid "November"
+msgstr "November"
+
+msgid "December"
+msgstr "Dezember"
+
+msgid "Export Markdown"
+msgstr "Markdown exportieren"
+
+msgid "Export CSV"
+msgstr "CSV exportieren"
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "Total time"
+msgstr "Gesamtzeit"
+
+msgid "Issues"
+msgstr "Issues"
+
+msgid "Categories"
+msgstr "Kategorien"
+
+msgid "No time tracked for this period"
+msgstr "Keine Zeit für diesen Zeitraum erfasst"
+
+msgid "No projects available"
+msgstr "Keine Projekte verfügbar"
+
+msgid "Unable to load projects"
+msgstr "Projekte können nicht geladen werden"
+
+msgid "Error loading projects"
+msgstr "Fehler beim Laden der Projekte"
+
+msgid "Unable to load report"
+msgstr "Bericht kann nicht geladen werden"
+
+msgid "Error loading report"
+msgstr "Fehler beim Laden des Berichts"
+
+msgid "No data to export"
+msgstr "Keine Daten zum Exportieren"
+
+msgid "Report exported"
+msgstr "Bericht exportiert"
+
+msgid "Unable to export"
+msgstr "Export nicht möglich"
+
+msgid "Unable to open report"
+msgstr "Bericht kann nicht geöffnet werden"
+
+msgid "Other"
+msgstr "Andere"
+
+msgid "No label"
+msgstr "Kein Label"

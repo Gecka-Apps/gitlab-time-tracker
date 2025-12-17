@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.gitlab-time-tracker" path="/org/gnome/shell/extensions/gitlab-time-tracker/">
+    <key name="gitlab-url" type="s">
+      <default>''</default>
+      <summary>GitLab Server URL</summary>
+      <description>The URL of your GitLab server (e.g., https://gitlab.com)</description>
+    </key>
+    <key name="gitlab-token" type="s">
+      <default>''</default>
+      <summary>GitLab Access Token</summary>
+      <description>Personal access token for GitLab API authentication</description>
+    </key>
+    <key name="report-tags-filter" type="s">
+      <default>''</default>
+      <summary>Report Tags Filter</summary>
+      <description>Comma-separated list of tags or regex patterns to filter in reports (e.g., "Maintenance corrective,^Maintenance.*$"). Leave empty to show all tags.</description>
+    </key>
+  </schema>
+</schemalist>
