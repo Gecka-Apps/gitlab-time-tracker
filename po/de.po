@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gitlab-time-tracker@gecka.nc\n"
 "Report-Msgid-Bugs-To: https://github.com/Gecka-Apps/gitlab-time-tracker/"
 "issues\n"
-"POT-Creation-Date: 2025-12-19 12:01+1100\n"
+"POT-Creation-Date: 2025-12-19 13:19+1100\n"
 "PO-Revision-Date: 2025-01-16 12:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
@@ -71,7 +71,7 @@ msgstr "Monatsbericht"
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: extension.js:146 issueSelector.js:52 reportDialog.js:62 reportDialog.js:816
+#: extension.js:146 issueSelector.js:52 reportDialog.js:63 reportDialog.js:820
 msgid "Project"
 msgstr "Projekt"
 
@@ -81,9 +81,9 @@ msgstr "Issue"
 
 #: extension.js:160 extension.js:174 extension.js:190 extension.js:205
 #: extension.js:221 extension.js:343 extension.js:346 extension.js:367
-#: extension.js:378 extension.js:382 reportDialog.js:300 reportDialog.js:303
-#: reportDialog.js:632 reportDialog.js:636 reportDialog.js:908
-#: reportDialog.js:953
+#: extension.js:378 extension.js:382 reportDialog.js:301 reportDialog.js:304
+#: reportDialog.js:636 reportDialog.js:640 reportDialog.js:912
+#: reportDialog.js:957
 msgid "Error"
 msgstr "Fehler"
 
@@ -156,7 +156,7 @@ msgstr "Einstellungen können nicht geöffnet werden"
 msgid "Select a project and an issue"
 msgstr "Ein Projekt und eine Issue auswählen"
 
-#: issueSelector.js:59 reportDialog.js:110
+#: issueSelector.js:59 reportDialog.js:111
 msgid "Search project..."
 msgstr "Projekt suchen..."
 
@@ -164,7 +164,7 @@ msgstr "Projekt suchen..."
 msgid "Search issue..."
 msgstr "Issue suchen..."
 
-#: issueSelector.js:127 reportDialog.js:208
+#: issueSelector.js:127 reportDialog.js:209
 msgid "Loading..."
 msgstr "Laden..."
 
@@ -172,135 +172,143 @@ msgstr "Laden..."
 msgid "Select"
 msgstr "Auswählen"
 
-#: issueSelector.js:372 reportDialog.js:807 reportDialog.js:906
-#: reportDialog.js:915 reportDialog.js:951
+#: issueSelector.js:372 reportDialog.js:811 reportDialog.js:919
+#: reportDialog.js:965 reportDialog.js:978
 msgid "GitLab Time Tracking"
 msgstr "GitLab Zeiterfassung"
 
-#: reportDialog.js:44 reportDialog.js:815
+#: reportDialog.js:45 reportDialog.js:819
 msgid "Monthly Time Report"
 msgstr "Monatlicher Zeitbericht"
 
-#: reportDialog.js:87
+#: reportDialog.js:88
 msgid "Select a project..."
 msgstr "Ein Projekt auswählen..."
 
-#: reportDialog.js:199 reportDialog.js:794 reportDialog.js:802
-#: reportDialog.js:818
+#: reportDialog.js:200 reportDialog.js:798 reportDialog.js:806
+#: reportDialog.js:822
 msgid "Total time"
 msgstr "Gesamtzeit"
 
-#: reportDialog.js:219
+#: reportDialog.js:220
 msgid "Export Markdown"
 msgstr "Markdown exportieren"
 
-#: reportDialog.js:223
+#: reportDialog.js:224
 msgid "Export CSV"
 msgstr "CSV exportieren"
 
-#: reportDialog.js:227
+#: reportDialog.js:228
 msgid "Close"
 msgstr "Schließen"
 
-#: reportDialog.js:238
+#: reportDialog.js:239
 msgid "January"
 msgstr "Januar"
 
-#: reportDialog.js:238
+#: reportDialog.js:239
 msgid "February"
 msgstr "Februar"
 
-#: reportDialog.js:238
+#: reportDialog.js:239
 msgid "March"
 msgstr "März"
 
-#: reportDialog.js:239
+#: reportDialog.js:240
 msgid "April"
 msgstr "April"
 
-#: reportDialog.js:239
+#: reportDialog.js:240
 msgid "May"
 msgstr "Mai"
 
-#: reportDialog.js:239
+#: reportDialog.js:240
 msgid "June"
 msgstr "Juni"
 
-#: reportDialog.js:240
+#: reportDialog.js:241
 msgid "July"
 msgstr "Juli"
 
-#: reportDialog.js:240
+#: reportDialog.js:241
 msgid "August"
 msgstr "August"
 
-#: reportDialog.js:240
+#: reportDialog.js:241
 msgid "September"
 msgstr "September"
 
-#: reportDialog.js:241
+#: reportDialog.js:242
 msgid "October"
 msgstr "Oktober"
 
-#: reportDialog.js:241
+#: reportDialog.js:242
 msgid "November"
 msgstr "November"
 
-#: reportDialog.js:241
+#: reportDialog.js:242
 msgid "December"
 msgstr "Dezember"
 
-#: reportDialog.js:300
+#: reportDialog.js:301
 msgid "Unable to load projects"
 msgstr "Projekte können nicht geladen werden"
 
-#: reportDialog.js:303
+#: reportDialog.js:304
 msgid "Error loading projects"
 msgstr "Fehler beim Laden der Projekte"
 
-#: reportDialog.js:385
+#: reportDialog.js:386
 msgid "No projects available"
 msgstr "Keine Projekte verfügbar"
 
-#: reportDialog.js:632
+#: reportDialog.js:636
 msgid "Unable to load report"
 msgstr "Bericht kann nicht geladen werden"
 
-#: reportDialog.js:636
+#: reportDialog.js:640
 msgid "Error loading report"
 msgstr "Fehler beim Laden des Berichts"
 
-#: reportDialog.js:670 reportDialog.js:851
+#: reportDialog.js:674 reportDialog.js:855
 msgid "Other"
 msgstr "Andere"
 
-#: reportDialog.js:670 reportDialog.js:851
+#: reportDialog.js:674 reportDialog.js:855
 msgid "No label"
 msgstr "Kein Label"
 
-#: reportDialog.js:743
+#: reportDialog.js:747
 msgid "No time tracked for this period"
 msgstr "Keine Zeit für diesen Zeitraum erfasst"
 
-#: reportDialog.js:802
+#: reportDialog.js:806
 msgid "Issues"
 msgstr "Issues"
 
-#: reportDialog.js:802
+#: reportDialog.js:806
 msgid "Categories"
 msgstr "Kategorien"
 
-#: reportDialog.js:807 reportDialog.js:915
+#: reportDialog.js:811 reportDialog.js:919
 msgid "No data to export"
 msgstr "Keine Daten zum Exportieren"
 
-#: reportDialog.js:906 reportDialog.js:951
+#: reportDialog.js:912 reportDialog.js:957
+msgid "Unable to export"
+msgstr "Export nicht möglich"
+
+#: reportDialog.js:979
 msgid "Report exported"
 msgstr "Bericht exportiert"
 
-#: reportDialog.js:908 reportDialog.js:953
-msgid "Unable to export"
-msgstr "Export nicht möglich"
+#: reportDialog.js:984
+msgid "Open File"
+msgstr "Datei öffnen"
+
+#: reportDialog.js:993
+msgid "Open Containing Folder"
+msgstr "Übergeordneten Ordner öffnen"
 
 #: prefs.js:16
 msgid "GitLab Configuration"
@@ -342,7 +350,8 @@ msgid ""
 "Issues without these tags will appear as \"Other\" in reports."
 msgstr ""
 "Leer lassen, um alle Tags anzuzeigen.\n"
-"Andernfalls geben Sie eine durch Kommas getrennte Liste von Tags oder regulären Ausdrücken ein.\n"
+"Andernfalls geben Sie eine durch Kommas getrennte Liste von Tags oder "
+"regulären Ausdrücken ein.\n"
 "Beispiele:\n"
 "  • \"Korrektive Wartung,Präventive Wartung\"\n"
 "  • \"^Wartung.*$\" (alle Tags, die mit \"Wartung\" beginnen)\n"

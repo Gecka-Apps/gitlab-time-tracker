@@ -6,6 +6,7 @@ import Soup from 'gi://Soup';
 import Gio from 'gi://Gio';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 
 export const ReportDialog = GObject.registerClass(
 class ReportDialog extends ModalDialog.ModalDialog {
@@ -543,7 +544,10 @@ class ReportDialog extends ModalDialog.ModalDialog {
                         if (message.status_code === 200 && bytes && bytes.get_size() > 0) {
                             const gicon = Gio.BytesIcon.new(bytes);
                             this._projectAvatars.set(cacheKey, gicon);
-                            iconWidget.set_gicon(gicon);
+                            // Check if widget still exists before accessing it
+                            if (!iconWidget.is_finalized()) {
+                                iconWidget.set_gicon(gicon);
+                            }
                         } else {
                             this._projectAvatars.set(cacheKey, null);
                         }
@@ -903,7 +907,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
                 null
             );
 
-            Main.notify(this._('GitLab Time Tracking'), `${this._('Report exported')}: ${filename}`);
+            this._notifyExportSuccess(filepath, filename);
         } catch (e) {
             Main.notify(this._('Error'), `${this._('Unable to export')}: ${e.message}`);
             log('GitLab Timer: Export error:', e.message);
@@ -948,11 +952,81 @@ class ReportDialog extends ModalDialog.ModalDialog {
                 null
             );
 
-            Main.notify(this._('GitLab Time Tracking'), `${this._('Report exported')}: ${filename}`);
+            this._notifyExportSuccess(filepath, filename);
         } catch (e) {
             Main.notify(this._('Error'), `${this._('Unable to export')}: ${e.message}`);
             log('GitLab Timer: Export error:', e.message);
         }
+    }
+
+    _getNotificationSource() {
+        if (!this._notificationSource) {
+            this._notificationSource = new MessageTray.Source({
+                title: this._('GitLab Time Tracking'),
+                iconName: 'document-save-symbolic'
+            });
+            Main.messageTray.add(this._notificationSource);
+        }
+        return this._notificationSource;
+    }
+
+    _notifyExportSuccess(filepath, filename) {
+        const source = this._getNotificationSource();
+
+        const notification = new MessageTray.Notification({
+            source: source,
+            title: this._('GitLab Time Tracking'),
+            body: `${this._('Report exported')}: ${filename}`,
+            iconName: 'document-save-symbolic'
+        });
+
+        // Add action to open file
+        notification.addAction(this._('Open File'), () => {
+            try {
+                GLib.spawn_command_line_async(`xdg-open "${filepath}"`);
+            } catch (e) {
+                log(`GitLab Timer: Error opening file: ${e.message}`);
+            }
+        });
+
+        // Add action to open containing folder with file selected
+        notification.addAction(this._('Open Containing Folder'), () => {
+            try {
+                const file = Gio.File.new_for_path(filepath);
+                const fileUri = file.get_uri();
+                log(`GitLab Timer: Opening containing folder for: ${fileUri}`);
+
+                // Use org.freedesktop.FileManager1 DBus interface to show the file in its folder
+                const bus = Gio.bus_get_sync(Gio.BusType.SESSION, null);
+                bus.call(
+                    'org.freedesktop.FileManager1',
+                    '/org/freedesktop/FileManager1',
+                    'org.freedesktop.FileManager1',
+                    'ShowItems',
+                    new GLib.Variant('(ass)', [[fileUri], '']),
+                    null,
+                    Gio.DBusCallFlags.NONE,
+                    -1,
+                    null,
+                    (connection, result) => {
+                        try {
+                            connection.call_finish(result);
+                        } catch (e) {
+                            log(`GitLab Timer: DBus call failed, falling back to opening folder: ${e.message}`);
+                            // Fallback: just open the folder
+                            const parent = file.get_parent();
+                            if (parent) {
+                                Gio.AppInfo.launch_default_for_uri(parent.get_uri(), null);
+                            }
+                        }
+                    }
+                );
+            } catch (e) {
+                log(`GitLab Timer: Error opening containing folder: ${e.message}`);
+            }
+        });
+
+        source.addNotification(notification);
     }
 
     _showLoading() {

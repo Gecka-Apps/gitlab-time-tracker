@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gitlab-time-tracker@gecka.nc\n"
 "Report-Msgid-Bugs-To: https://github.com/Gecka-Apps/gitlab-time-tracker/"
 "issues\n"
-"POT-Creation-Date: 2025-12-19 12:01+1100\n"
+"POT-Creation-Date: 2025-12-19 13:19+1100\n"
 "PO-Revision-Date: 2025-01-16 12:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
@@ -71,7 +71,7 @@ msgstr "Informe mensual"
 msgid "Settings"
 msgstr "Configuración"
 
-#: extension.js:146 issueSelector.js:52 reportDialog.js:62 reportDialog.js:816
+#: extension.js:146 issueSelector.js:52 reportDialog.js:63 reportDialog.js:820
 msgid "Project"
 msgstr "Proyecto"
 
@@ -81,9 +81,9 @@ msgstr "Issue"
 
 #: extension.js:160 extension.js:174 extension.js:190 extension.js:205
 #: extension.js:221 extension.js:343 extension.js:346 extension.js:367
-#: extension.js:378 extension.js:382 reportDialog.js:300 reportDialog.js:303
-#: reportDialog.js:632 reportDialog.js:636 reportDialog.js:908
-#: reportDialog.js:953
+#: extension.js:378 extension.js:382 reportDialog.js:301 reportDialog.js:304
+#: reportDialog.js:636 reportDialog.js:640 reportDialog.js:912
+#: reportDialog.js:957
 msgid "Error"
 msgstr "Error"
 
@@ -156,7 +156,7 @@ msgstr "No se pueden abrir las preferencias"
 msgid "Select a project and an issue"
 msgstr "Seleccionar un proyecto y una issue"
 
-#: issueSelector.js:59 reportDialog.js:110
+#: issueSelector.js:59 reportDialog.js:111
 msgid "Search project..."
 msgstr "Buscar proyecto..."
 
@@ -164,7 +164,7 @@ msgstr "Buscar proyecto..."
 msgid "Search issue..."
 msgstr "Buscar issue..."
 
-#: issueSelector.js:127 reportDialog.js:208
+#: issueSelector.js:127 reportDialog.js:209
 msgid "Loading..."
 msgstr "Cargando..."
 
@@ -172,135 +172,143 @@ msgstr "Cargando..."
 msgid "Select"
 msgstr "Seleccionar"
 
-#: issueSelector.js:372 reportDialog.js:807 reportDialog.js:906
-#: reportDialog.js:915 reportDialog.js:951
+#: issueSelector.js:372 reportDialog.js:811 reportDialog.js:919
+#: reportDialog.js:965 reportDialog.js:978
 msgid "GitLab Time Tracking"
 msgstr "Seguimiento de Tiempo GitLab"
 
-#: reportDialog.js:44 reportDialog.js:815
+#: reportDialog.js:45 reportDialog.js:819
 msgid "Monthly Time Report"
 msgstr "Informe mensual de tiempo"
 
-#: reportDialog.js:87
+#: reportDialog.js:88
 msgid "Select a project..."
 msgstr "Seleccionar un proyecto..."
 
-#: reportDialog.js:199 reportDialog.js:794 reportDialog.js:802
-#: reportDialog.js:818
+#: reportDialog.js:200 reportDialog.js:798 reportDialog.js:806
+#: reportDialog.js:822
 msgid "Total time"
 msgstr "Tiempo total"
 
-#: reportDialog.js:219
+#: reportDialog.js:220
 msgid "Export Markdown"
 msgstr "Exportar Markdown"
 
-#: reportDialog.js:223
+#: reportDialog.js:224
 msgid "Export CSV"
 msgstr "Exportar CSV"
 
-#: reportDialog.js:227
+#: reportDialog.js:228
 msgid "Close"
 msgstr "Cerrar"
 
-#: reportDialog.js:238
+#: reportDialog.js:239
 msgid "January"
 msgstr "Enero"
 
-#: reportDialog.js:238
+#: reportDialog.js:239
 msgid "February"
 msgstr "Febrero"
 
-#: reportDialog.js:238
+#: reportDialog.js:239
 msgid "March"
 msgstr "Marzo"
 
-#: reportDialog.js:239
+#: reportDialog.js:240
 msgid "April"
 msgstr "Abril"
 
-#: reportDialog.js:239
+#: reportDialog.js:240
 msgid "May"
 msgstr "Mayo"
 
-#: reportDialog.js:239
+#: reportDialog.js:240
 msgid "June"
 msgstr "Junio"
 
-#: reportDialog.js:240
+#: reportDialog.js:241
 msgid "July"
 msgstr "Julio"
 
-#: reportDialog.js:240
+#: reportDialog.js:241
 msgid "August"
 msgstr "Agosto"
 
-#: reportDialog.js:240
+#: reportDialog.js:241
 msgid "September"
 msgstr "Septiembre"
 
-#: reportDialog.js:241
+#: reportDialog.js:242
 msgid "October"
 msgstr "Octubre"
 
-#: reportDialog.js:241
+#: reportDialog.js:242
 msgid "November"
 msgstr "Noviembre"
 
-#: reportDialog.js:241
+#: reportDialog.js:242
 msgid "December"
 msgstr "Diciembre"
 
-#: reportDialog.js:300
+#: reportDialog.js:301
 msgid "Unable to load projects"
 msgstr "No se pueden cargar los proyectos"
 
-#: reportDialog.js:303
+#: reportDialog.js:304
 msgid "Error loading projects"
 msgstr "Error al cargar los proyectos"
 
-#: reportDialog.js:385
+#: reportDialog.js:386
 msgid "No projects available"
 msgstr "No hay proyectos disponibles"
 
-#: reportDialog.js:632
+#: reportDialog.js:636
 msgid "Unable to load report"
 msgstr "No se puede cargar el informe"
 
-#: reportDialog.js:636
+#: reportDialog.js:640
 msgid "Error loading report"
 msgstr "Error al cargar el informe"
 
-#: reportDialog.js:670 reportDialog.js:851
+#: reportDialog.js:674 reportDialog.js:855
 msgid "Other"
 msgstr "Otro"
 
-#: reportDialog.js:670 reportDialog.js:851
+#: reportDialog.js:674 reportDialog.js:855
 msgid "No label"
 msgstr "Sin etiqueta"
 
-#: reportDialog.js:743
+#: reportDialog.js:747
 msgid "No time tracked for this period"
 msgstr "No hay tiempo registrado para este período"
 
-#: reportDialog.js:802
+#: reportDialog.js:806
 msgid "Issues"
 msgstr "Issues"
 
-#: reportDialog.js:802
+#: reportDialog.js:806
 msgid "Categories"
 msgstr "Categorías"
 
-#: reportDialog.js:807 reportDialog.js:915
+#: reportDialog.js:811 reportDialog.js:919
 msgid "No data to export"
 msgstr "No hay datos para exportar"
 
-#: reportDialog.js:906 reportDialog.js:951
+#: reportDialog.js:912 reportDialog.js:957
+msgid "Unable to export"
+msgstr "No se puede exportar"
+
+#: reportDialog.js:979
 msgid "Report exported"
 msgstr "Informe exportado"
 
-#: reportDialog.js:908 reportDialog.js:953
-msgid "Unable to export"
-msgstr "No se puede exportar"
+#: reportDialog.js:984
+msgid "Open File"
+msgstr "Abrir archivo"
+
+#: reportDialog.js:993
+msgid "Open Containing Folder"
+msgstr "Abrir carpeta contenedora"
 
 #: prefs.js:16
 msgid "GitLab Configuration"
@@ -342,10 +350,12 @@ msgid ""
 "Issues without these tags will appear as \"Other\" in reports."
 msgstr ""
 "Deje vacío para mostrar todas las etiquetas.\n"
-"De lo contrario, ingrese una lista de etiquetas separadas por comas o expresiones regulares.\n"
+"De lo contrario, ingrese una lista de etiquetas separadas por comas o "
+"expresiones regulares.\n"
 "Ejemplos:\n"
 "  • \"Mantenimiento Correctivo,Mantenimiento Preventivo\"\n"
-"  • \"^Mantenimiento.*$\" (todas las etiquetas que comienzan con \"Mantenimiento\")\n"
+"  • \"^Mantenimiento.*$\" (todas las etiquetas que comienzan con "
+"\"Mantenimiento\")\n"
 "  • \"Bug,^Feature.*$\"\n"
 "\n"
 "Las issues sin estas etiquetas aparecerán como \"Otro\" en los informes."
