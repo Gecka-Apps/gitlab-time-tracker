@@ -151,7 +151,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     _loadProjects() {
-        this._showLoading('Chargement des projets...');
+        this._showLoading(this._('Loading projects...'));
 
         const url = this._settings.get_string('gitlab-url');
         const token = this._settings.get_string('gitlab-token');
@@ -176,10 +176,10 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                         this._updateProjectList();
                         this._hideLoading();
                     } else {
-                        this._showLoading(`Erreur: ${message.status_code}`);
+                        this._showLoading(`${this._('Error')}: ${message.status_code}`);
                     }
                 } catch (e) {
-                    this._showLoading(`Erreur: ${e.message}`);
+                    this._showLoading(`${this._('Error')}: ${e.message}`);
                 }
             }
         );
@@ -262,7 +262,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     _loadIssues(projectId) {
-        this._showLoading('Chargement des issues...');
+        this._showLoading(this._('Loading issues...'));
 
         const url = this._settings.get_string('gitlab-url');
         const token = this._settings.get_string('gitlab-token');
@@ -287,10 +287,10 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                         this._updateIssueList();
                         this._hideLoading();
                     } else {
-                        this._showLoading(`Erreur: ${message.status_code}`);
+                        this._showLoading(`${this._('Error')}: ${message.status_code}`);
                     }
                 } catch (e) {
-                    this._showLoading(`Erreur: ${e.message}`);
+                    this._showLoading(`${this._('Error')}: ${e.message}`);
                 }
             }
         );
@@ -333,7 +333,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
 
         if (filteredIssues.length === 0) {
             let emptyLabel = new St.Label({
-                text: 'Aucune issue trouvée',
+                text: this._('No issues found'),
                 style: 'padding: 20px; font-style: italic; color: #999;'
             });
             this._issueList.add_child(emptyLabel);

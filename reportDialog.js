@@ -635,11 +635,11 @@ class ReportDialog extends ModalDialog.ModalDialog {
         // Build Markdown content
         let md = `# ${this._('Monthly Time Report')} - ${this._selectedProject.path_with_namespace}\n\n`;
         md += `**${this._('Project')}:** ${this._selectedProject.path_with_namespace}\n`;
-        md += `**Période:** ${monthYear}\n`;
+        md += `**${this._('Period')}:** ${monthYear}\n`;
         md += `**${this._('Total time')}:** ${totalHours}h\n\n`;
 
         // Summary by label
-        md += `## Résumé par catégorie\n\n`;
+        md += `## ${this._('Summary by category')}\n\n`;
         const sortedLabels = Object.entries(this._reportData.timeByLabel)
             .sort((a, b) => b[1] - a[1]); // Sort by time descending
 
@@ -649,7 +649,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
         }
 
         // Detail by issue
-        md += `\n## Détail par ticket\n\n`;
+        md += `\n## ${this._('Detail by issue')}\n\n`;
 
         // Group issues by label (respecting filters)
         const issuesByLabel = {};

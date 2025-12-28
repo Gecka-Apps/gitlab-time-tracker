@@ -169,6 +169,30 @@ msgstr "Buscar issue..."
 msgid "Loading..."
 msgstr "Cargando..."
 
+#: issueSelector.js
+msgid "Loading projects..."
+msgstr "Cargando proyectos..."
+
+#: issueSelector.js
+msgid "Loading issues..."
+msgstr "Cargando issues..."
+
+#: issueSelector.js
+msgid "No issues found"
+msgstr "No se encontraron issues"
+
+#: reportDialog.js
+msgid "Period"
+msgstr "Período"
+
+#: reportDialog.js
+msgid "Summary by category"
+msgstr "Resumen por categoría"
+
+#: reportDialog.js
+msgid "Detail by issue"
+msgstr "Detalle por ticket"
+
 #: issueSelector.js:142
 msgid "Select"
 msgstr "Seleccionar"
