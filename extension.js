@@ -187,15 +187,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         }
 
         try {
-            // Detect the scheme from the URL (http or https)
-            const scheme = projectUrl.startsWith('https://') ? 'https' : 'http';
-            const launcher = Gio.AppInfo.get_default_for_uri_scheme(scheme);
-            if (launcher) {
-                launcher.launch_uris([projectUrl], null);
-            } else {
-                // Fallback: use xdg-open
-                GLib.spawn_command_line_async(`xdg-open "${projectUrl}"`);
-            }
+            Gio.AppInfo.launch_default_for_uri(projectUrl, null);
         } catch (e) {
             Main.notify(this._('Error'), this._('Unable to open browser') + ': ' + e.message);
             console.debug('GitLab Timer: Error opening project URL:', e.message);
@@ -218,15 +210,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         }
 
         try {
-            // Detect the scheme from the URL (http or https)
-            const scheme = issueUrl.startsWith('https://') ? 'https' : 'http';
-            const launcher = Gio.AppInfo.get_default_for_uri_scheme(scheme);
-            if (launcher) {
-                launcher.launch_uris([issueUrl], null);
-            } else {
-                // Fallback: use xdg-open
-                GLib.spawn_command_line_async(`xdg-open "${issueUrl}"`);
-            }
+            Gio.AppInfo.launch_default_for_uri(issueUrl, null);
         } catch (e) {
             Main.notify(this._('Error'), this._('Unable to open browser') + ': ' + e.message);
             console.debug('GitLab Timer: Error opening issue URL:', e.message);
