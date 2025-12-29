@@ -20,8 +20,8 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         this._ = gettext;
 
         this._settings = settings;
-        this._httpSession = new Soup.Session();
         this._extensionPath = path;
+        this._httpSession = new Soup.Session();
 
         // Timer state
         this._timerRunning = false;
@@ -147,7 +147,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
         try {
             log('GitLab Timer: Creating IssueSelectorDialog...');
-            let dialog = new IssueSelectorDialog(this._settings, this._, (project, issue) => {
+            let dialog = new IssueSelectorDialog(this._settings, this._, this._httpSession, (project, issue) => {
                 this._selectedProject = project;
                 this._selectedIssue = issue;
                 this._projectLabel.label.text = `${this._('Project')}: ${project.path_with_namespace}`;
@@ -353,7 +353,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             message,
             GLib.PRIORITY_DEFAULT,
             null,
-            (session, result) => {
+            (_session, _result) => {
                 try {
                     if (message.status_code === 201 || message.status_code === 200) {
                         Main.notify(this._('GitLab Issues Timer'), `${this._('Time sent')}: ${duration} ${this._('on issue')} #${this._selectedIssue.iid}`);
@@ -376,7 +376,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
         try {
             // Pass the currently selected project if available
-            let dialog = new ReportDialog(this._settings, this._, this._selectedProject);
+            let dialog = new ReportDialog(this._settings, this._, this._httpSession, this._selectedProject);
             dialog.open();
             log('GitLab Timer: Report dialog opened successfully');
         } catch (e) {

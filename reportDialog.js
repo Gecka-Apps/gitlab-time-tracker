@@ -2,7 +2,6 @@ import GObject from 'gi://GObject';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
-import Soup from 'gi://Soup';
 import Gio from 'gi://Gio';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -12,12 +11,12 @@ import {AvatarLoader} from './avatarLoader.js';
 
 export const ReportDialog = GObject.registerClass(
 class ReportDialog extends ModalDialog.ModalDialog {
-    _init(settings, gettext, preselectedProject = null) {
+    _init(settings, gettext, httpSession, preselectedProject = null) {
         super._init({ styleClass: 'gitlab-report-dialog' });
 
         this._settings = settings;
         this._ = gettext;
-        this._httpSession = new Soup.Session();
+        this._httpSession = httpSession;
         this._avatarLoader = new AvatarLoader(settings, this._httpSession);
         this._projects = [];
         this._selectedProject = null;

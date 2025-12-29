@@ -2,7 +2,6 @@ import GObject from 'gi://GObject';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
-import Soup from 'gi://Soup';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
@@ -10,13 +9,13 @@ import {AvatarLoader} from './avatarLoader.js';
 
 export const IssueSelectorDialog = GObject.registerClass(
 class IssueSelectorDialog extends ModalDialog.ModalDialog {
-    _init(settings, gettext, onSelected) {
+    _init(settings, gettext, httpSession, onSelected) {
         super._init({ styleClass: 'gitlab-issue-selector-dialog' });
 
         this._settings = settings;
         this._ = gettext;
         this._onSelected = onSelected;
-        this._httpSession = new Soup.Session();
+        this._httpSession = httpSession;
         this._avatarLoader = new AvatarLoader(settings, this._httpSession);
         this._projects = [];
         this._allIssues = [];
