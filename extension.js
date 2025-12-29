@@ -14,13 +14,14 @@ import {ReportDialog} from './reportDialog.js';
 
 const GitLabIssuesIndicator = GObject.registerClass(
 class GitLabIssuesIndicator extends PanelMenu.Button {
-    _init(settings, path, gettext) {
+    _init(extension) {
         super._init(0.0, 'GitLab Issues Timer');
 
-        this._ = gettext;
+        this._extension = extension;
+        this._ = extension.gettext.bind(extension);
 
-        this._settings = settings;
-        this._extensionPath = path;
+        this._settings = extension.getSettings();
+        this._extensionPath = extension.path;
         this._httpSession = new Soup.Session();
 
         // Timer state
@@ -133,7 +134,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         // Settings button
         let settingsItem = new PopupMenu.PopupMenuItem(this._('Settings'));
         settingsItem.connect('activate', () => {
-            this._openPreferences();
+            this._extension.openPreferences();
         });
         this.menu.addMenuItem(settingsItem);
     }
@@ -376,23 +377,6 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         }
     }
 
-    _openPreferences() {
-        try {
-            const extensionManager = Main.extensionManager;
-            const extension = extensionManager.lookup('gitlab-time-tracker@gecka.nc');
-            if (extension) {
-                extensionManager.openExtensionPrefs(extension.uuid, '', {});
-            } else {
-                Main.notify(this._('Error'), this._('Extension not found'));
-                console.debug('GitLab Timer: Extension not found');
-            }
-        } catch (e) {
-            Main.notify(this._('Error'), this._('Unable to open preferences') + ': ' + e.message);
-            console.debug('GitLab Timer: Error opening preferences:', e.message);
-            console.debug('GitLab Timer: Stack:', e.stack);
-        }
-    }
-
     _saveTimerState() {
         // Build project object if selected
         const projectData = this._selectedProject ? {
@@ -550,8 +534,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
 export default class GitLabIssuesExtension extends Extension {
     enable() {
-        this._settings = this.getSettings();
-        this._indicator = new GitLabIssuesIndicator(this._settings, this.path, this.gettext.bind(this));
+        this._indicator = new GitLabIssuesIndicator(this);
         Main.panel.addToStatusArea(this.uuid, this._indicator);
     }
 
@@ -560,6 +543,5 @@ export default class GitLabIssuesExtension extends Extension {
             this._indicator.destroy();
             this._indicator = null;
         }
-        this._settings = null;
     }
 }
