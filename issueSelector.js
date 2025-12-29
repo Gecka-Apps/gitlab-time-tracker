@@ -19,7 +19,6 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         this._httpSession = new Soup.Session();
         this._avatarLoader = new AvatarLoader(settings, this._httpSession);
         this._projects = [];
-        this._issues = [];
         this._allIssues = [];
         this._selectedProject = null;
 
