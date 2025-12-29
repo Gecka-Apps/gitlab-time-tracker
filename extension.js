@@ -227,6 +227,12 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         this._timerPaused = false;
         this._timerStartTimestamp = Math.floor(Date.now() / 1000) - this._elapsedSeconds;
 
+        // Remove existing timeout before creating a new one
+        if (this._timerId) {
+            GLib.source_remove(this._timerId);
+            this._timerId = null;
+        }
+
         this._timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
             if (!this._timerPaused) {
                 this._elapsedSeconds++;
