@@ -531,7 +531,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
                 try {
                     return { type: 'regex', pattern: new RegExp(filter) };
                 } catch (e) {
-                    log(`GitLab Report: Invalid regex "${filter}": ${e.message}`);
+                    console.debug(`GitLab Report: Invalid regex "${filter}": ${e.message}`);
                     // Fall back to literal match
                     return { type: 'literal', value: filter };
                 }
@@ -727,7 +727,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
             this._notifyExportSuccess(filepath, filename);
         } catch (e) {
             Main.notify(this._('Error'), `${this._('Unable to export')}: ${e.message}`);
-            log('GitLab Timer: Export error:', e.message);
+            console.debug('GitLab Timer: Export error:', e.message);
         }
     }
 
@@ -772,7 +772,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
             this._notifyExportSuccess(filepath, filename);
         } catch (e) {
             Main.notify(this._('Error'), `${this._('Unable to export')}: ${e.message}`);
-            log('GitLab Timer: Export error:', e.message);
+            console.debug('GitLab Timer: Export error:', e.message);
         }
     }
 
@@ -802,7 +802,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
             try {
                 GLib.spawn_command_line_async(`xdg-open "${filepath}"`);
             } catch (e) {
-                log(`GitLab Timer: Error opening file: ${e.message}`);
+                console.debug(`GitLab Timer: Error opening file: ${e.message}`);
             }
         });
 
@@ -811,7 +811,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
             try {
                 const file = Gio.File.new_for_path(filepath);
                 const fileUri = file.get_uri();
-                log(`GitLab Timer: Opening containing folder for: ${fileUri}`);
+                console.debug(`GitLab Timer: Opening containing folder for: ${fileUri}`);
 
                 // Use org.freedesktop.FileManager1 DBus interface to show the file in its folder
                 const bus = Gio.bus_get_sync(Gio.BusType.SESSION, null);
@@ -829,7 +829,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
                         try {
                             connection.call_finish(result);
                         } catch (e) {
-                            log(`GitLab Timer: DBus call failed, falling back to opening folder: ${e.message}`);
+                            console.debug(`GitLab Timer: DBus call failed, falling back to opening folder: ${e.message}`);
                             // Fallback: just open the folder
                             const parent = file.get_parent();
                             if (parent) {
@@ -839,7 +839,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
                     }
                 );
             } catch (e) {
-                log(`GitLab Timer: Error opening containing folder: ${e.message}`);
+                console.debug(`GitLab Timer: Error opening containing folder: ${e.message}`);
             }
         });
 

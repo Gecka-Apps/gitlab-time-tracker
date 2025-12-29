@@ -60,13 +60,13 @@ export class AvatarLoader {
                         }
                     } catch (e) {
                         this._avatarCache.set(cacheKey, null);
-                        log('GitLab AvatarLoader: Failed to load project avatar:', e.message);
+                        console.debug('GitLab AvatarLoader: Failed to load project avatar:', e.message);
                     }
                 }
             );
         } catch (e) {
             this._avatarCache.set(cacheKey, null);
-            log('GitLab AvatarLoader: Error creating avatar request:', e.message);
+            console.debug('GitLab AvatarLoader: Error creating avatar request:', e.message);
         }
     }
 
@@ -115,13 +115,13 @@ export class AvatarLoader {
                         }
                     } catch (e) {
                         this._avatarCache.set(cacheKey, null);
-                        log('GitLab AvatarLoader: Failed to load user info:', e.message);
+                        console.debug('GitLab AvatarLoader: Failed to load user info:', e.message);
                     }
                 }
             );
         } catch (e) {
             this._avatarCache.set(cacheKey, null);
-            log('GitLab AvatarLoader: Error creating user info request:', e.message);
+            console.debug('GitLab AvatarLoader: Error creating user info request:', e.message);
         }
     }
 
@@ -162,13 +162,13 @@ export class AvatarLoader {
                         }
                     } catch (e) {
                         this._avatarCache.set(cacheKey, null);
-                        log('GitLab AvatarLoader: Failed to download avatar:', e.message);
+                        console.debug('GitLab AvatarLoader: Failed to download avatar:', e.message);
                     }
                 }
             );
         } catch (e) {
             this._avatarCache.set(cacheKey, null);
-            log('GitLab AvatarLoader: Error downloading avatar:', e.message);
+            console.debug('GitLab AvatarLoader: Error downloading avatar:', e.message);
         }
     }
 
@@ -200,13 +200,13 @@ export class AvatarLoader {
                         }
                     } catch (e) {
                         this._avatarCache.set(cacheKey, null);
-                        log('GitLab AvatarLoader: Failed to load group avatar:', e.message);
+                        console.debug('GitLab AvatarLoader: Failed to load group avatar:', e.message);
                     }
                 }
             );
         } catch (e) {
             this._avatarCache.set(cacheKey, null);
-            log('GitLab AvatarLoader: Error creating group avatar request:', e.message);
+            console.debug('GitLab AvatarLoader: Error creating group avatar request:', e.message);
         }
     }
 
