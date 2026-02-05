@@ -50,6 +50,7 @@ build: clean
 	# Create extension package
 	mkdir -p build/
 	gnome-extensions pack -f \
+		--extra-source=avatarLoader.js \
 		--extra-source=metadata.json \
 		--extra-source=LICENSE \
 		--extra-source=README.md \
