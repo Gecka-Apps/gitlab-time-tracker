@@ -155,11 +155,9 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         try {
             const url = this._settings.get_string('gitlab-url');
             const token = this._settings.get_string('gitlab-token');
-
-            log(`GitLab Issue Selector: Fetching projects from URL: ${url}`);
-            log(`GitLab Issue Selector: Using token length: ${token ? token.length : 0}`);
-
             const apiUrl = `${url}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`;
+
+            console.debug('GitLab Issue Selector: Fetching projects');
 
             const message = Soup.Message.new('GET', apiUrl);
             message.request_headers.append('PRIVATE-TOKEN', token);
@@ -175,13 +173,8 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                         const decoder = new TextDecoder('utf-8');
                         response = decoder.decode(bytes.get_data());
 
-                        log(`GitLab Issue Selector: API response status code: ${message.status_code}`);
-                        log(`GitLab Issue Selector: API response length: ${response.length}`);
-
                         if (message.status_code === 200) {
-                            log('GitLab Issue Selector: Parsing projects JSON...');
                             this._projects = JSON.parse(response);
-                            log(`GitLab Issue Selector: Loaded ${this._projects.length} projects`);
                             this._updateProjectList();
                             this._hideLoading();
                         } else if (message.status_code === 401 || message.status_code === 403) {
@@ -191,23 +184,17 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                             this._showLoading(authMessage);
                             Main.notify(this._('Error'), authMessage);
                         } else {
-                            log(`GitLab Issue Selector: Error fetching projects: ${message.status_code}`);
-                            log(`GitLab Issue Selector: Response body: ${response}`);
+                            console.debug(`GitLab Issue Selector: Error fetching projects: ${message.status_code}`);
                             this._showLoading(`${this._('Error')}: ${message.status_code}`);
                         }
                     } catch (e) {
-                        log(`GitLab Issue Selector: Error parsing projects: ${e.message}`);
-                        log(`GitLab Issue Selector: Full error: ${e.stack}`);
-                        if (response) {
-                            log(`GitLab Issue Selector: Response: ${response}`);
-                        }
+                        console.debug(`GitLab Issue Selector: Error parsing projects: ${e.message}`);
                         this._showLoading(`${this._('Error')}: ${e.message}`);
                     }
                 }
             );
         } catch (e) {
-            log(`GitLab Issue Selector: Error loading projects: ${e.message}`);
-            log(`GitLab Issue Selector: Full error: ${e.stack}`);
+            console.debug(`GitLab Issue Selector: Error loading projects: ${e.message}`);
             this._showLoading(`${this._('Error')}: ${e.message}`);
         }
     }
