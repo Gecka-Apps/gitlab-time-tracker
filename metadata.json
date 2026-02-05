@@ -8,8 +8,8 @@
     "48",
     "49"
   ],
-  "version": 1,
-  "version-name": "1.0.0",
+  "version": 2,
+  "version-name": "1.0.1",
   "url": "https://github.com/Gecka-Apps/gitlab-time-tracker",
   "settings-schema": "org.gnome.shell.extensions.gitlab-time-tracker",
   "gettext-domain": "gitlab-time-tracker@gecka.nc"

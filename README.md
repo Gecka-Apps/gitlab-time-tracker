@@ -4,7 +4,7 @@
 
 A GNOME Shell extension for tracking time spent on GitLab issues directly from your system tray.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.1-blue)
 ![License](https://img.shields.io/badge/license-GPL--3.0-green)
 ![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-46%20|%2047%20|%2048%20|%2049-blue)
 ![Languages](https://img.shields.io/badge/languages-4-brightgreen)
@@ -260,21 +260,25 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 3. Add your language code to `po/LINGUAS`
 4. Test your translation by building and installing the extension
 
-## License
-
-This project is licensed under the GNU General Public License v3.0 or later - see the [LICENSE](LICENSE) file for details.
-
-## Credits
-
-- **Material Design Icons**: Timer icons from [Material Design Icons](https://materialdesignicons.com/)
-- **GNOME Shell**: Extension API and documentation
-
 ## Support
 
 For issues, questions, or feature requests, please visit:
 - **Issues**: https://github.com/Gecka-Apps/gitlab-time-tracker/issues
 - **Discussions**: https://github.com/Gecka-Apps/gitlab-time-tracker/discussions
 
+## Credits
+
+- **Material Design Icons**: Timer icons from [Material Design Icons](https://materialdesignicons.com/)
+- **GNOME Shell**: Extension API and documentation
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html) or later - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+- **Laurent Dinclaux** <laurent@gecka.nc> - Gecka
+
 ---
 
-Made with ❤️ for the GNOME and GitLab communities
+Built with 🥥 and ☕ by [Gecka](https://gecka.nc) — Kanaky-New Caledonia 🇳🇨
