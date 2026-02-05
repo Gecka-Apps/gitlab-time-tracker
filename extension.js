@@ -14,13 +14,14 @@ import {ReportDialog} from './reportDialog.js';
 
 const GitLabIssuesIndicator = GObject.registerClass(
 class GitLabIssuesIndicator extends PanelMenu.Button {
-    _init(settings, path, gettext) {
+    _init(extension) {
         super._init(0.0, 'GitLab Issues Timer');
 
-        this._ = gettext;
+        this._extension = extension;
+        this._ = extension.gettext.bind(extension);
 
-        this._settings = settings;
-        this._extensionPath = path;
+        this._settings = extension.getSettings();
+        this._extensionPath = extension.path;
         this._httpSession = new Soup.Session();
 
         // Timer state
@@ -133,7 +134,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         // Settings button
         let settingsItem = new PopupMenu.PopupMenuItem(this._('Settings'));
         settingsItem.connect('activate', () => {
-            this._openPreferences();
+            this._extension.openPreferences();
         });
         this.menu.addMenuItem(settingsItem);
     }
@@ -187,15 +188,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         }
 
         try {
-            // Detect the scheme from the URL (http or https)
-            const scheme = projectUrl.startsWith('https://') ? 'https' : 'http';
-            const launcher = Gio.AppInfo.get_default_for_uri_scheme(scheme);
-            if (launcher) {
-                launcher.launch_uris([projectUrl], null);
-            } else {
-                // Fallback: use xdg-open
-                GLib.spawn_command_line_async(`xdg-open "${projectUrl}"`);
-            }
+            Gio.AppInfo.launch_default_for_uri(projectUrl, null);
         } catch (e) {
             Main.notify(this._('Error'), this._('Unable to open browser') + ': ' + e.message);
             console.debug('GitLab Timer: Error opening project URL:', e.message);
@@ -218,15 +211,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         }
 
         try {
-            // Detect the scheme from the URL (http or https)
-            const scheme = issueUrl.startsWith('https://') ? 'https' : 'http';
-            const launcher = Gio.AppInfo.get_default_for_uri_scheme(scheme);
-            if (launcher) {
-                launcher.launch_uris([issueUrl], null);
-            } else {
-                // Fallback: use xdg-open
-                GLib.spawn_command_line_async(`xdg-open "${issueUrl}"`);
-            }
+            Gio.AppInfo.launch_default_for_uri(issueUrl, null);
         } catch (e) {
             Main.notify(this._('Error'), this._('Unable to open browser') + ': ' + e.message);
             console.debug('GitLab Timer: Error opening issue URL:', e.message);
@@ -242,6 +227,12 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         this._timerRunning = true;
         this._timerPaused = false;
         this._timerStartTimestamp = Math.floor(Date.now() / 1000) - this._elapsedSeconds;
+
+        // Remove existing timeout before creating a new one
+        if (this._timerId) {
+            GLib.source_remove(this._timerId);
+            this._timerId = null;
+        }
 
         this._timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
             if (!this._timerPaused) {
@@ -403,6 +394,10 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             console.debug('GitLab Timer: Error opening preferences:', e.message);
             console.debug('GitLab Timer: Stack:', e.stack);
         }
+        // Pass the currently selected project if available
+        let dialog = new ReportDialog(this._settings, this._, this._selectedProject);
+        dialog.open();
+        console.debug('GitLab Timer: Report dialog opened successfully');
     }
 
     _saveTimerState() {
@@ -562,8 +557,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
 export default class GitLabIssuesExtension extends Extension {
     enable() {
-        this._settings = this.getSettings();
-        this._indicator = new GitLabIssuesIndicator(this._settings, this.path, this.gettext.bind(this));
+        this._indicator = new GitLabIssuesIndicator(this);
         Main.panel.addToStatusArea(this.uuid, this._indicator);
     }
 
@@ -572,6 +566,5 @@ export default class GitLabIssuesExtension extends Extension {
             this._indicator.destroy();
             this._indicator = null;
         }
-        this._settings = null;
     }
 }
