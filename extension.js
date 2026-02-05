@@ -365,16 +365,10 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             return;
         }
 
-        try {
-            // Pass the currently selected project if available
-            let dialog = new ReportDialog(this._settings, this._, this._selectedProject);
-            dialog.open();
-            console.debug('GitLab Timer: Report dialog opened successfully');
-        } catch (e) {
-            console.debug('GitLab Timer: Error opening report dialog: ' + e.message);
-            console.debug('Stack trace: ' + e.stack);
-            Main.notify(this._('Error'), this._('Unable to open report') + ': ' + e.message);
-        }
+        // Pass the currently selected project if available
+        let dialog = new ReportDialog(this._settings, this._, this._selectedProject);
+        dialog.open();
+        console.debug('GitLab Timer: Report dialog opened successfully');
     }
 
     _saveTimerState() {
