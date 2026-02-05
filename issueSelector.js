@@ -152,46 +152,51 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     _loadProjects() {
         this._showLoading(this._('Loading projects...'));
 
-        const url = this._settings.get_string('gitlab-url');
-        const token = this._settings.get_string('gitlab-token');
-        const apiUrl = `${url}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`;
+        try {
+            const url = this._settings.get_string('gitlab-url');
+            const token = this._settings.get_string('gitlab-token');
+            const apiUrl = `${url}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`;
 
-        console.debug('GitLab Issue Selector: Fetching projects');
+            console.debug('GitLab Issue Selector: Fetching projects');
 
-        const message = Soup.Message.new('GET', apiUrl);
-        message.request_headers.append('PRIVATE-TOKEN', token);
+            const message = Soup.Message.new('GET', apiUrl);
+            message.request_headers.append('PRIVATE-TOKEN', token);
 
-        this._httpSession.send_and_read_async(
-            message,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (session, result) => {
-                let response = '';
-                try {
-                    const bytes = session.send_and_read_finish(result);
-                    const decoder = new TextDecoder('utf-8');
-                    response = decoder.decode(bytes.get_data());
+            this._httpSession.send_and_read_async(
+                message,
+                GLib.PRIORITY_DEFAULT,
+                null,
+                (session, result) => {
+                    let response = '';
+                    try {
+                        const bytes = session.send_and_read_finish(result);
+                        const decoder = new TextDecoder('utf-8');
+                        response = decoder.decode(bytes.get_data());
 
-                    if (message.status_code === 200) {
-                        this._projects = JSON.parse(response);
-                        this._updateProjectList();
-                        this._hideLoading();
-                    } else if (message.status_code === 401 || message.status_code === 403) {
-                        const authMessage = this._('Please configure the server URL and token in preferences');
-                        this._projects = [];
-                        this._updateProjectList();
-                        this._showLoading(authMessage);
-                        Main.notify(this._('Error'), authMessage);
-                    } else {
-                        console.debug(`GitLab Issue Selector: Error fetching projects: ${message.status_code}`);
-                        this._showLoading(`${this._('Error')}: ${message.status_code}`);
+                        if (message.status_code === 200) {
+                            this._projects = JSON.parse(response);
+                            this._updateProjectList();
+                            this._hideLoading();
+                        } else if (message.status_code === 401 || message.status_code === 403) {
+                            const authMessage = this._('Please configure the server URL and token in preferences');
+                            this._projects = [];
+                            this._updateProjectList();
+                            this._showLoading(authMessage);
+                            Main.notify(this._('Error'), authMessage);
+                        } else {
+                            console.debug(`GitLab Issue Selector: Error fetching projects: ${message.status_code}`);
+                            this._showLoading(`${this._('Error')}: ${message.status_code}`);
+                        }
+                    } catch (e) {
+                        console.debug(`GitLab Issue Selector: Error parsing projects: ${e.message}`);
+                        this._showLoading(`${this._('Error')}: ${e.message}`);
                     }
-                } catch (e) {
-                    console.debug(`GitLab Issue Selector: Error parsing projects: ${e.message}`);
-                    this._showLoading(`${this._('Error')}: ${e.message}`);
                 }
-            }
-        );
+            );
+        } catch (e) {
+            console.debug(`GitLab Issue Selector: Error loading projects: ${e.message}`);
+            this._showLoading(`${this._('Error')}: ${e.message}`);
+        }
     }
 
     _updateProjectList() {
