@@ -139,14 +139,14 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
     }
 
     _openIssueSelector() {
-        log('GitLab Timer: Opening issue selector...');
+        console.debug('GitLab Timer: Opening issue selector...');
         if (!this._validateSettings()) {
-            log('GitLab Timer: Settings validation failed');
+            console.debug('GitLab Timer: Settings validation failed');
             return;
         }
 
         try {
-            log('GitLab Timer: Creating IssueSelectorDialog...');
+            console.debug('GitLab Timer: Creating IssueSelectorDialog...');
             let dialog = new IssueSelectorDialog(this._settings, this._, (project, issue) => {
                 this._selectedProject = project;
                 this._selectedIssue = issue;
@@ -161,12 +161,12 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
                 this._saveTimerState();
             });
 
-            log('GitLab Timer: Opening dialog...');
+            console.debug('GitLab Timer: Opening dialog...');
             dialog.open();
-            log('GitLab Timer: Dialog opened successfully');
+            console.debug('GitLab Timer: Dialog opened successfully');
         } catch (e) {
-            log('GitLab Timer: Error opening issue selector: ' + e.message);
-            log('Stack trace: ' + e.stack);
+            console.debug('GitLab Timer: Error opening issue selector: ' + e.message);
+            console.debug('Stack trace: ' + e.stack);
             Main.notify(this._('Error'), this._('Unable to open selector') + ': ' + e.message);
         }
     }
@@ -182,7 +182,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
         if (!projectUrl) {
             Main.notify(this._('Error'), this._('Project URL not available'));
-            log('GitLab Timer: Project web_url is missing');
+            console.debug('GitLab Timer: Project web_url is missing');
             return;
         }
 
@@ -198,7 +198,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             }
         } catch (e) {
             Main.notify(this._('Error'), this._('Unable to open browser') + ': ' + e.message);
-            log('GitLab Timer: Error opening project URL:', e.message);
+            console.debug('GitLab Timer: Error opening project URL:', e.message);
         }
     }
 
@@ -213,7 +213,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
         if (!issueUrl) {
             Main.notify(this._('Error'), this._('Issue URL not available'));
-            log('GitLab Timer: Issue web_url is missing');
+            console.debug('GitLab Timer: Issue web_url is missing');
             return;
         }
 
@@ -229,7 +229,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             }
         } catch (e) {
             Main.notify(this._('Error'), this._('Unable to open browser') + ': ' + e.message);
-            log('GitLab Timer: Error opening issue URL:', e.message);
+            console.debug('GitLab Timer: Error opening issue URL:', e.message);
         }
     }
 
@@ -370,9 +370,9 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
     }
 
     _openReport() {
-        log('GitLab Timer: Opening report dialog...');
+        console.debug('GitLab Timer: Opening report dialog...');
         if (!this._validateSettings()) {
-            log('GitLab Timer: Settings validation failed');
+            console.debug('GitLab Timer: Settings validation failed');
             return;
         }
 
@@ -380,10 +380,10 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             // Pass the currently selected project if available
             let dialog = new ReportDialog(this._settings, this._, this._selectedProject);
             dialog.open();
-            log('GitLab Timer: Report dialog opened successfully');
+            console.debug('GitLab Timer: Report dialog opened successfully');
         } catch (e) {
-            log('GitLab Timer: Error opening report dialog: ' + e.message);
-            log('Stack trace: ' + e.stack);
+            console.debug('GitLab Timer: Error opening report dialog: ' + e.message);
+            console.debug('Stack trace: ' + e.stack);
             Main.notify(this._('Error'), this._('Unable to open report') + ': ' + e.message);
         }
     }
@@ -396,12 +396,12 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
                 extensionManager.openExtensionPrefs(extension.uuid, '', {});
             } else {
                 Main.notify(this._('Error'), this._('Extension not found'));
-                log('GitLab Timer: Extension not found');
+                console.debug('GitLab Timer: Extension not found');
             }
         } catch (e) {
             Main.notify(this._('Error'), this._('Unable to open preferences') + ': ' + e.message);
-            log('GitLab Timer: Error opening preferences:', e.message);
-            log('GitLab Timer: Stack:', e.stack);
+            console.debug('GitLab Timer: Error opening preferences:', e.message);
+            console.debug('GitLab Timer: Stack:', e.stack);
         }
     }
 
@@ -434,7 +434,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
                 issue: issueData
             };
             this._settings.set_string('timer-state', JSON.stringify(state));
-            log(`GitLab Timer: Saved timer state (paused: ${this._timerPaused}, elapsed: ${this._elapsedSeconds})`);
+            console.debug(`GitLab Timer: Saved timer state (paused: ${this._timerPaused}, elapsed: ${this._elapsedSeconds})`);
         } else if (projectData) {
             // Even if timer is not running, save the selected project for session persistence
             const state = {
@@ -444,7 +444,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
                 issue: issueData
             };
             this._settings.set_string('timer-state', JSON.stringify(state));
-            log('GitLab Timer: Saved project state (timer not running)');
+            console.debug('GitLab Timer: Saved project state (timer not running)');
         } else {
             this._settings.set_string('timer-state', '{}');
         }
@@ -457,7 +457,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
             const state = JSON.parse(stateJson);
 
-            log('GitLab Timer: Restoring timer state...');
+            console.debug('GitLab Timer: Restoring timer state...');
 
             // Restore project and issue selection
             this._selectedProject = state.project;
@@ -465,7 +465,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
             // If timer was not running, just restore project/issue selection
             if (!state.running) {
-                log('GitLab Timer: Restored project selection (timer was not running)');
+                console.debug('GitLab Timer: Restored project selection (timer was not running)');
                 this._settings.set_string('timer-state', '{}');
                 return;
             }
@@ -486,17 +486,17 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
                     // Count time elapsed since timer was started
                     const now = Math.floor(Date.now() / 1000);
                     this._elapsedSeconds = now - state.startTimestamp;
-                    log(`GitLab Timer: Timer resumed with calculated time: ${this._elapsedSeconds} seconds`);
+                    console.debug(`GitLab Timer: Timer resumed with calculated time: ${this._elapsedSeconds} seconds`);
                 } else {
                     // Use saved elapsed time (don't count time during lock/shutdown)
                     this._elapsedSeconds = state.elapsedSeconds;
-                    log(`GitLab Timer: Timer resumed with saved time: ${this._elapsedSeconds} seconds`);
+                    console.debug(`GitLab Timer: Timer resumed with saved time: ${this._elapsedSeconds} seconds`);
                 }
             } else {
                 // Default: restore in paused state with saved time
                 this._timerPaused = true;
                 this._elapsedSeconds = state.elapsedSeconds;
-                log('GitLab Timer: Timer restored in paused state');
+                console.debug('GitLab Timer: Timer restored in paused state');
             }
 
             // Restart the timer interval
@@ -511,9 +511,9 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             // Clear saved state after successful restore
             this._settings.set_string('timer-state', '{}');
 
-            log(`GitLab Timer: Timer restored with ${this._elapsedSeconds} seconds (paused: ${this._timerPaused})`);
+            console.debug(`GitLab Timer: Timer restored with ${this._elapsedSeconds} seconds (paused: ${this._timerPaused})`);
         } catch (e) {
-            log(`GitLab Timer: Error restoring timer state: ${e.message}`);
+            console.debug(`GitLab Timer: Error restoring timer state: ${e.message}`);
             this._settings.set_string('timer-state', '{}');
         }
     }
@@ -542,7 +542,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
     }
 
     destroy() {
-        log('GitLab Timer: destroy() called');
+        console.debug('GitLab Timer: destroy() called');
 
         // Save timer state before destroying
         this._saveTimerState();
