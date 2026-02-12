@@ -174,6 +174,8 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                         this._projects = JSON.parse(response);
                         this._updateProjectList();
                         this._hideLoading();
+                    } else if (message.status_code === 401 || message.status_code === 403) {
+                        this._showLoading(this._('Please configure the server URL and token in preferences'));
                     } else {
                         this._showLoading(`${this._('Error')}: ${message.status_code}`);
                     }
@@ -284,6 +286,8 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                         this._allIssues = JSON.parse(response);
                         this._updateIssueList();
                         this._hideLoading();
+                    } else if (message.status_code === 401 || message.status_code === 403) {
+                        this._showLoading(this._('Please configure the server URL and token in preferences'));
                     } else {
                         this._showLoading(`${this._('Error')}: ${message.status_code}`);
                     }

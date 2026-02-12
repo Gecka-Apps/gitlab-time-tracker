@@ -348,6 +348,8 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
                 try {
                     if (message.status_code === 201 || message.status_code === 200) {
                         Main.notify(this._('GitLab Issues Timer'), `${this._('Time sent')}: ${duration} ${this._('on issue')} #${this._selectedIssue.iid}`);
+                    } else if (message.status_code === 401 || message.status_code === 403) {
+                        Main.notify(this._('Error'), this._('Please configure the server URL and token in preferences'));
                     } else {
                         Main.notify(this._('Error'), `${this._('Unable to send time')}: ${message.status_code}`);
                     }

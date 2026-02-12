@@ -299,6 +299,8 @@ class ReportDialog extends ModalDialog.ModalDialog {
                                 this._selectProject(project, null);
                             }
                         }
+                    } else if (message.status_code === 401 || message.status_code === 403) {
+                        Main.notify(this._('Error'), this._('Please configure the server URL and token in preferences'));
                     } else {
                         Main.notify(this._('Error'), `${this._('Unable to load projects')}: ${message.status_code}`);
                     }
@@ -448,6 +450,9 @@ class ReportDialog extends ModalDialog.ModalDialog {
                     if (message.status_code === 200) {
                         const issues = JSON.parse(response);
                         this._processReportData(issues);
+                    } else if (message.status_code === 401 || message.status_code === 403) {
+                        this._hideLoading();
+                        Main.notify(this._('Error'), this._('Please configure the server URL and token in preferences'));
                     } else {
                         this._hideLoading();
                         Main.notify(this._('Error'), `${this._('Unable to load report')}: ${message.status_code}`);
