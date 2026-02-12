@@ -800,7 +800,8 @@ class ReportDialog extends ModalDialog.ModalDialog {
         // Add action to open file
         notification.addAction(this._('Open File'), () => {
             try {
-                GLib.spawn_command_line_async(`xdg-open "${filepath}"`);
+                const file = Gio.File.new_for_path(filepath);
+                Gio.AppInfo.launch_default_for_uri(file.get_uri(), null);
             } catch (e) {
                 console.debug(`GitLab Timer: Error opening file: ${e.message}`);
             }
