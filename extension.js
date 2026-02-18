@@ -148,7 +148,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
         try {
             console.debug('GitLab Timer: Creating IssueSelectorDialog...');
-            let dialog = new IssueSelectorDialog(this._settings, this._, (project, issue) => {
+            let dialog = new IssueSelectorDialog(this._settings, this._, this._selectedProject, this._selectedIssue, (project, issue) => {
                 this._selectedProject = project;
                 this._selectedIssue = issue;
                 this._projectLabel.label.text = `${this._('Project')}: ${project.path_with_namespace}`;
@@ -434,7 +434,6 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             // If timer was not running, just restore project/issue selection
             if (!state.running) {
                 console.debug('GitLab Timer: Restored project selection (timer was not running)');
-                this._settings.set_string('timer-state', '{}');
                 return;
             }
 

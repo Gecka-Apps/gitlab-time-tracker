@@ -10,12 +10,14 @@ import {AvatarLoader} from './avatarLoader.js';
 
 export const IssueSelectorDialog = GObject.registerClass(
 class IssueSelectorDialog extends ModalDialog.ModalDialog {
-    _init(settings, gettext, onSelected) {
+    _init(settings, gettext, currentProject, currentIssue, onSelected) {
         super._init({ styleClass: 'gitlab-issue-selector-dialog' });
 
         this._settings = settings;
         this._ = gettext;
         this._onSelected = onSelected;
+        this._preselectedProject = currentProject;
+        this._preselectedIssue = currentIssue;
         this._httpSession = new Soup.Session();
         this._avatarLoader = new AvatarLoader(settings, this._httpSession);
         this._projects = [];
@@ -174,6 +176,18 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                         this._projects = JSON.parse(response);
                         this._updateProjectList();
                         this._hideLoading();
+
+                        // Auto-select preselected project
+                        if (this._preselectedProject) {
+                            const sorted = [...this._projects].sort((a, b) =>
+                                a.path_with_namespace.localeCompare(b.path_with_namespace));
+                            const index = sorted.findIndex(p => p.id === this._preselectedProject.id);
+                            if (index >= 0) {
+                                const widgets = this._projectList.get_children();
+                                if (widgets[index])
+                                    this._selectProject(sorted[index], widgets[index]);
+                            }
+                        }
                     } else if (message.status_code === 401 || message.status_code === 403) {
                         this._showLoading(this._('Please configure the server URL and token in preferences'));
                     } else {
@@ -286,6 +300,16 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                         this._allIssues = JSON.parse(response);
                         this._updateIssueList();
                         this._hideLoading();
+
+                        // Auto-select preselected issue
+                        if (this._preselectedIssue) {
+                            const index = this._allIssues.findIndex(i => i.iid === this._preselectedIssue.iid);
+                            if (index >= 0) {
+                                const widgets = this._issueList.get_children();
+                                if (widgets[index])
+                                    this._selectIssue(this._allIssues[index], widgets[index]);
+                            }
+                        }
                     } else if (message.status_code === 401 || message.status_code === 403) {
                         this._showLoading(this._('Please configure the server URL and token in preferences'));
                     } else {
