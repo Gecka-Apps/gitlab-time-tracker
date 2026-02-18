@@ -15,7 +15,7 @@ jsconfig.json
 schemas/gschemas.compiled
 
 # Compiled translation files (MO files)
-po/*.mo
+*.mo
 
 # Localization directories (generated during build)
 locale/
