@@ -114,7 +114,7 @@ export class AvatarLoader {
             if (status === 200 && bytes && bytes.get_size() > 0) {
                 const gicon = Gio.BytesIcon.new(bytes);
                 this._avatarCache.set(cacheKey, gicon);
-                if (iconWidget && !iconWidget.is_finalized || (typeof iconWidget.is_finalized === 'function' && !iconWidget.is_finalized()))
+                if (iconWidget && typeof iconWidget.is_finalized === 'function' && !iconWidget.is_finalized())
                     iconWidget.set_gicon(gicon);
             } else {
                 this._avatarCache.set(cacheKey, null);
