@@ -3,7 +3,6 @@
 .gitlab-timer-label {
     font-size: 18px;
     font-weight: bold;
-    color: #ffffff;
 }
 
 .gitlab-project-label,
@@ -12,12 +11,39 @@
     font-size: 12px;
 }
 
-.popup-menu-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
 /* Theme-aware icon coloring */
 .system-status-icon {
     icon-size: 16px;
     -st-icon-style: symbolic;
+}
+
+/* Issue selector dialog */
+.gitlab-list-container {
+    height: 180px;
+}
+
+.gitlab-project-list,
+.gitlab-issue-list {
+    padding-right: 6px;
+}
+
+.gitlab-empty-label {
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Report dialog */
+.gitlab-report-project-list {
+    height: 200px;
+}
+
+.gitlab-chart-container {
+    height: 300px;
+    margin-bottom: 15px;
+}
+
+.gitlab-chart-bar {
+    background-color: #3584e4;
+    background-color: -st-accent-color;
+    border-radius: 3px;
 }

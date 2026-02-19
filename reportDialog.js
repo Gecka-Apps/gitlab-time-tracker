@@ -58,7 +58,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         let projectHeaderBox = new St.BoxLayout({
             vertical: false,
-            style: 'margin-bottom: 5px; spacing: 10px;'
+            style: 'margin-bottom: 5px;'
         });
 
         let projectLabel = new St.Label({
@@ -69,13 +69,13 @@ class ReportDialog extends ModalDialog.ModalDialog {
         projectHeaderBox.add_child(projectLabel);
 
         this._projectDropdown = new St.Button({
-            style: 'padding: 8px 12px; border: 1px solid #555; border-radius: 5px; min-width: 300px;',
+            style_class: 'popup-menu-item',
+            style: 'padding: 8px 12px; min-width: 300px; margin-left: 10px;',
             x_expand: true
         });
 
         let dropdownBox = new St.BoxLayout({
             vertical: false,
-            style: 'spacing: 8px;',
             x_expand: true
         });
 
@@ -88,7 +88,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         this._projectDropdownLabel = new St.Label({
             text: this._('Select a project...'),
-            style: 'font-size: 12px;',
+            style: 'font-size: 12px; margin-left: 8px;',
             y_align: Clutter.ActorAlign.CENTER,
             x_align: Clutter.ActorAlign.START,
             x_expand: true
@@ -122,7 +122,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         // Project list with scrolling
         let projectScrollView = new St.ScrollView({
-            style: 'border: 1px solid #555; border-radius: 5px; height: 200px;',
+            style_class: 'popup-menu-content gitlab-report-project-list',
             hscrollbar_policy: St.PolicyType.NEVER,
             vscrollbar_policy: St.PolicyType.AUTOMATIC
         });
@@ -148,11 +148,11 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         let dateBox = new St.BoxLayout({
             vertical: false,
-            style: 'spacing: 10px;'
         });
 
         this._prevMonthBtn = new St.Button({
-            style: 'padding: 8px 15px; border: 1px solid #555; border-radius: 5px;',
+            style_class: 'popup-menu-item',
+            style: 'padding: 8px 15px;',
             label: '◀',
             y_align: Clutter.ActorAlign.CENTER
         });
@@ -161,14 +161,15 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         this._dateLabel = new St.Label({
             text: this._formatMonthYear(),
-            style: 'font-size: 16px; font-weight: bold; min-width: 200px; text-align: center;',
+            style: 'font-size: 16px; font-weight: bold; min-width: 200px; text-align: center; margin-left: 10px;',
             x_align: Clutter.ActorAlign.CENTER,
             y_align: Clutter.ActorAlign.CENTER
         });
         dateBox.add_child(this._dateLabel);
 
         this._nextMonthBtn = new St.Button({
-            style: 'padding: 8px 15px; border: 1px solid #555; border-radius: 5px;',
+            style_class: 'popup-menu-item',
+            style: 'padding: 8px 15px; margin-left: 10px;',
             label: '▶',
             y_align: Clutter.ActorAlign.CENTER
         });
@@ -180,7 +181,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         // Chart area
         this._chartContainer = new St.ScrollView({
-            style: 'border: 1px solid #555; border-radius: 5px; height: 300px; margin-bottom: 15px;',
+            style_class: 'popup-menu-content gitlab-chart-container',
             hscrollbar_policy: St.PolicyType.NEVER,
             vscrollbar_policy: St.PolicyType.AUTOMATIC
         });
@@ -195,7 +196,8 @@ class ReportDialog extends ModalDialog.ModalDialog {
         // Summary section
         this._summaryBox = new St.BoxLayout({
             vertical: true,
-            style: 'padding: 15px; background-color: rgba(255,255,255,0.05); border-radius: 5px; margin-bottom: 15px;'
+            style_class: 'popup-menu-content',
+            style: 'padding: 15px; margin-bottom: 15px;'
         });
 
         this._summaryLabel = new St.Label({
@@ -209,7 +211,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
         // Loading indicator
         this._loadingLabel = new St.Label({
             text: this._('Loading...'),
-            style: 'font-style: italic; color: #999;'
+            style_class: 'gitlab-empty-label'
         });
         this._loadingLabel.hide();
         content.add_child(this._loadingLabel);
@@ -340,8 +342,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         for (let project of filteredProjects) {
             let item = new St.Button({
-                style_class: 'gitlab-list-item',
-                style: 'padding: 8px; border-radius: 3px;',
+                style_class: 'popup-menu-item',
                 can_focus: true,
                 track_hover: true,
                 x_expand: true,
@@ -353,7 +354,6 @@ class ReportDialog extends ModalDialog.ModalDialog {
                 vertical: false,
                 x_align: Clutter.ActorAlign.START,
                 x_expand: true,
-                style: 'spacing: 8px;'
             });
 
             // Add project/group icon
@@ -371,7 +371,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
             let label = new St.Label({
                 text: project.path_with_namespace,
-                style: 'font-size: 12px;',
+                style: 'font-size: 12px; margin-left: 8px;',
                 y_align: Clutter.ActorAlign.CENTER
             });
             box.add_child(label);
@@ -388,7 +388,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
         if (filteredProjects.length === 0) {
             let emptyLabel = new St.Label({
                 text: this._('No projects available'),
-                style: 'padding: 20px; font-style: italic; color: #999;'
+                style_class: 'gitlab-empty-label'
             });
             this._projectList.add_child(emptyLabel);
         }
@@ -567,7 +567,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
         if (!this._reportData || Object.keys(this._reportData.timeByLabel).length === 0) {
             let emptyLabel = new St.Label({
                 text: this._('No time tracked for this period'),
-                style: 'font-style: italic; color: #999; padding: 40px;'
+                style_class: 'gitlab-empty-label'
             });
             this._chartBox.add_child(emptyLabel);
             return;
@@ -586,7 +586,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
             let barContainer = new St.BoxLayout({
                 vertical: false,
-                style: 'margin-bottom: 10px; spacing: 10px;'
+                style: 'margin-bottom: 10px;'
             });
 
             // Label name
@@ -599,7 +599,8 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
             // Bar
             let bar = new St.Widget({
-                style: `background-color: #4a90d9; height: 25px; width: ${barWidth}px; border-radius: 3px;`
+                style_class: 'gitlab-chart-bar',
+                style: `height: 25px; width: ${barWidth}px; margin-left: 10px;`
             });
             barContainer.add_child(bar);
 

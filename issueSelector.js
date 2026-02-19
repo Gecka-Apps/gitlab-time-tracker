@@ -72,7 +72,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         // Project list container with overlay support
         let projectContainer = new St.Widget({
             layout_manager: new Clutter.BinLayout(),
-            style: 'border: 1px solid #555; border-radius: 5px; height: 180px;',
+            style_class: 'popup-menu-content gitlab-list-container',
             x_expand: true,
             clip_to_allocation: true
         });
@@ -125,7 +125,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         // Issue list container with overlay support
         let issueContainer = new St.Widget({
             layout_manager: new Clutter.BinLayout(),
-            style: 'border: 1px solid #555; border-radius: 5px; height: 180px;',
+            style_class: 'popup-menu-content gitlab-list-container',
             x_expand: true,
             clip_to_allocation: true
         });
@@ -244,8 +244,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
 
         for (let project of filteredProjects) {
             let item = new St.Button({
-                style_class: 'gitlab-list-item',
-                style: 'padding: 8px; border-radius: 3px;',
+                style_class: 'popup-menu-item',
                 can_focus: true,
                 track_hover: true,
                 x_expand: true,
@@ -257,7 +256,6 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                 vertical: false,
                 x_align: Clutter.ActorAlign.START,
                 x_expand: true,
-                style: 'spacing: 8px;'
             });
 
             // Add project/group icon
@@ -275,7 +273,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
 
             let label = new St.Label({
                 text: project.path_with_namespace,
-                style: 'font-size: 12px;',
+                style: 'margin-left: 8px;',
                 y_align: Clutter.ActorAlign.CENTER
             });
             box.add_child(label);
@@ -294,11 +292,10 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         this._selectedProject = project;
 
         // Highlight selected project
-        if (this._selectedProjectWidget) {
-            this._selectedProjectWidget.style = 'padding: 8px; border-radius: 3px;';
-        }
+        if (this._selectedProjectWidget)
+            this._selectedProjectWidget.remove_style_pseudo_class('active');
         this._selectedProjectWidget = widget;
-        widget.style = 'padding: 8px; border-radius: 3px; background-color: #4a90d9;';
+        widget.add_style_pseudo_class('active');
 
         // Load issues for this project
         this._loadIssues(project.id);
@@ -338,8 +335,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
 
         for (let issue of filteredIssues) {
             let item = new St.Button({
-                style_class: 'gitlab-list-item',
-                style: 'padding: 8px; border-radius: 3px;',
+                style_class: 'popup-menu-item',
                 can_focus: true,
                 track_hover: true,
                 x_expand: true,
@@ -348,7 +344,6 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
 
             let label = new St.Label({
                 text: `#${issue.iid} - ${issue.title}`,
-                style: 'font-size: 12px;',
                 x_align: Clutter.ActorAlign.START,
                 x_expand: true
             });
@@ -364,7 +359,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         if (filteredIssues.length === 0) {
             let emptyLabel = new St.Label({
                 text: this._('No issues found'),
-                style: 'padding: 20px; font-style: italic; color: #999;'
+                style_class: 'gitlab-empty-label'
             });
             this._issueList.add_child(emptyLabel);
         }
@@ -374,11 +369,10 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         this._selectedIssue = issue;
 
         // Highlight selected issue
-        if (this._selectedIssueWidget) {
-            this._selectedIssueWidget.style = 'padding: 8px; border-radius: 3px;';
-        }
+        if (this._selectedIssueWidget)
+            this._selectedIssueWidget.remove_style_pseudo_class('active');
         this._selectedIssueWidget = widget;
-        widget.style = 'padding: 8px; border-radius: 3px; background-color: #4a90d9;';
+        widget.add_style_pseudo_class('active');
     }
 
     _filterProjects() {
