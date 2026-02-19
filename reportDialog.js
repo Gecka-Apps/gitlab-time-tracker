@@ -398,6 +398,37 @@ class ReportDialog extends ModalDialog.ModalDialog {
         this._updateProjectList();
     }
 
+    _apiGet(path, onSuccess, onError = null) {
+        const url = this._settings.get_string('gitlab-url');
+        const token = this._settings.get_string('gitlab-token');
+
+        const message = Soup.Message.new('GET', `${url}/api/v4${path}`);
+        message.request_headers.append('PRIVATE-TOKEN', token);
+
+        this._httpSession.send_and_read_async(
+            message,
+            GLib.PRIORITY_DEFAULT,
+            null,
+            (session, result) => {
+                try {
+                    const bytes = session.send_and_read_finish(result);
+                    const decoder = new TextDecoder('utf-8');
+                    const response = decoder.decode(bytes.get_data());
+
+                    if (message.status_code === 200) {
+                        onSuccess(JSON.parse(response));
+                    } else {
+                        console.debug(`GitLab Report: API error ${message.status_code} for ${path}`);
+                        if (onError) onError(message.status_code);
+                    }
+                } catch (e) {
+                    console.debug(`GitLab Report: API error for ${path}: ${e.message}`);
+                    if (onError) onError(e);
+                }
+            }
+        );
+    }
+
     _selectProject(project, gicon) {
         this._selectedProject = project;
         this._projectDropdownLabel.text = project.path_with_namespace;
@@ -421,99 +452,114 @@ class ReportDialog extends ModalDialog.ModalDialog {
     _loadReportData() {
         this._showLoading();
 
-        const url = this._settings.get_string('gitlab-url');
-        const token = this._settings.get_string('gitlab-token');
+        // Build date range strings without UTC conversion (avoids timezone shift)
+        const month = String(this._currentMonth + 1).padStart(2, '0');
+        const lastDay = new Date(this._currentYear, this._currentMonth + 1, 0).getDate();
+        const startDateStr = `${this._currentYear}-${month}-01`;
+        const endDateStr = `${this._currentYear}-${month}-${String(lastDay).padStart(2, '0')}`;
 
-        // Calculate date range for the selected month
-        const startDate = new Date(this._currentYear, this._currentMonth, 1);
-        const endDate = new Date(this._currentYear, this._currentMonth + 1, 0);
+        // Fetch issues updated in this period (gives us labels and metadata)
+        this._apiGet(
+            `/projects/${this._selectedProject.id}/issues?updated_after=${startDateStr}&updated_before=${endDateStr}T23:59:59Z&per_page=100`,
+            (issues) => {
+                const issuesWithTime = issues.filter(i =>
+                    i.time_stats && i.time_stats.total_time_spent > 0);
 
-        const startDateStr = startDate.toISOString().split('T')[0];
-        const endDateStr = endDate.toISOString().split('T')[0];
-
-        // Get all issues updated in this month
-        const apiUrl = `${url}/api/v4/projects/${this._selectedProject.id}/issues?updated_after=${startDateStr}&updated_before=${endDateStr}T23:59:59Z&per_page=100`;
-
-        const message = Soup.Message.new('GET', apiUrl);
-        message.request_headers.append('PRIVATE-TOKEN', token);
-
-        this._httpSession.send_and_read_async(
-            message,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (session, result) => {
-                try {
-                    const bytes = session.send_and_read_finish(result);
-                    const decoder = new TextDecoder('utf-8');
-                    const response = decoder.decode(bytes.get_data());
-
-                    if (message.status_code === 200) {
-                        const issues = JSON.parse(response);
-                        this._processReportData(issues);
-                    } else if (message.status_code === 401 || message.status_code === 403) {
-                        this._hideLoading();
-                        Main.notify(this._('Error'), this._('Please configure the server URL and token in preferences'));
-                    } else {
-                        this._hideLoading();
-                        Main.notify(this._('Error'), `${this._('Unable to load report')}: ${message.status_code}`);
-                    }
-                } catch (e) {
-                    this._hideLoading();
-                    Main.notify(this._('Error'), `${this._('Error loading report')}: ${e.message}`);
+                if (issuesWithTime.length === 0) {
+                    this._processReportData([], new Map());
+                    return;
                 }
+
+                // Fetch timelogs for each issue to get accurate monthly time
+                let pending = issuesWithTime.length;
+                const timelogsByIssue = new Map();
+
+                for (const issue of issuesWithTime) {
+                    this._apiGet(
+                        `/projects/${this._selectedProject.id}/issues/${issue.iid}/timelogs?per_page=100`,
+                        (timelogs) => {
+                            // Only count timelogs spent during the selected month
+                            const monthTime = timelogs
+                                .filter(tl => {
+                                    const spentAt = tl.spent_at || tl.created_at;
+                                    if (!spentAt) return false;
+                                    const date = new Date(spentAt);
+                                    return date.getFullYear() === this._currentYear &&
+                                           date.getMonth() === this._currentMonth;
+                                })
+                                .reduce((sum, tl) => sum + tl.time_spent, 0);
+
+                            timelogsByIssue.set(issue.iid, monthTime);
+                            pending--;
+                            if (pending === 0)
+                                this._processReportData(issuesWithTime, timelogsByIssue);
+                        },
+                        (error) => {
+                            // Timelogs API failed, fall back to cumulative total_time_spent
+                            console.debug(`GitLab Report: timelogs API failed for issue #${issue.iid} (${error}), using total_time_spent`);
+                            timelogsByIssue.set(issue.iid, issue.time_stats.total_time_spent);
+                            pending--;
+                            if (pending === 0)
+                                this._processReportData(issuesWithTime, timelogsByIssue);
+                        }
+                    );
+                }
+            },
+            (error) => {
+                this._hideLoading();
+                if (error === 401 || error === 403)
+                    Main.notify(this._('Error'), this._('Please configure the server URL and token in preferences'));
+                else
+                    Main.notify(this._('Error'), `${this._('Unable to load report')}: ${error}`);
             }
         );
     }
 
-    _processReportData(issues) {
+    _processReportData(issues, timelogsByIssue) {
         // Get tag filter from settings
         const filterString = this._settings.get_string('report-tags-filter').trim();
         const tagFilters = this._parseTagFilters(filterString);
 
-        // Aggregate time by labels
+        // Aggregate time by labels using per-month timelogs
         const timeByLabel = {};
         let totalSeconds = 0;
+        const issuesWithMonthTime = [];
 
         for (const issue of issues) {
-            if (issue.time_stats && issue.time_stats.total_time_spent > 0) {
-                const timeSpent = issue.time_stats.total_time_spent; // in seconds
-                totalSeconds += timeSpent;
+            const timeSpent = timelogsByIssue.get(issue.iid) || 0;
+            if (timeSpent <= 0) continue;
 
-                // Group by labels
-                const labels = issue.labels || [];
+            totalSeconds += timeSpent;
+            issuesWithMonthTime.push(issue);
 
-                // If filter is active, only count matching labels
-                let matchedLabels = [];
-                if (tagFilters.length > 0) {
-                    matchedLabels = labels.filter(label => this._labelMatchesFilters(label, tagFilters));
-                } else {
-                    // No filter, use all labels
-                    matchedLabels = labels;
-                }
+            // Group by labels
+            const labels = issue.labels || [];
 
-                if (matchedLabels.length === 0) {
-                    // No matching label or no label at all
-                    const otherLabel = tagFilters.length > 0 ? this._('Other') : this._('No label');
-                    if (!timeByLabel[otherLabel]) {
-                        timeByLabel[otherLabel] = 0;
-                    }
-                    timeByLabel[otherLabel] += timeSpent;
-                } else {
-                    for (const label of matchedLabels) {
-                        if (!timeByLabel[label]) {
-                            timeByLabel[label] = 0;
-                        }
-                        timeByLabel[label] += timeSpent;
-                    }
+            let matchedLabels = [];
+            if (tagFilters.length > 0) {
+                matchedLabels = labels.filter(label => this._labelMatchesFilters(label, tagFilters));
+            } else {
+                matchedLabels = labels;
+            }
+
+            if (matchedLabels.length === 0) {
+                const otherLabel = tagFilters.length > 0 ? this._('Other') : this._('No label');
+                if (!timeByLabel[otherLabel]) timeByLabel[otherLabel] = 0;
+                timeByLabel[otherLabel] += timeSpent;
+            } else {
+                for (const label of matchedLabels) {
+                    if (!timeByLabel[label]) timeByLabel[label] = 0;
+                    timeByLabel[label] += timeSpent;
                 }
             }
         }
 
         this._reportData = {
-            timeByLabel: timeByLabel,
-            totalSeconds: totalSeconds,
-            issues: issues,
-            tagFilters: tagFilters
+            timeByLabel,
+            totalSeconds,
+            issues: issuesWithMonthTime,
+            tagFilters,
+            timelogsByIssue
         };
 
         this._hideLoading();
@@ -624,7 +670,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
 
         const totalHours = (this._reportData.totalSeconds / 3600).toFixed(1);
         const labelCount = Object.keys(this._reportData.timeByLabel).length;
-        const issueCount = this._reportData.issues.filter(i => i.time_stats && i.time_stats.total_time_spent > 0).length;
+        const issueCount = this._reportData.issues.length;
 
         this._summaryLabel.text = `${this._('Total time')}: ${totalHours}h | ${this._('Issues')}: ${issueCount} | ${this._('Categories')}: ${labelCount}`;
     }
@@ -662,31 +708,23 @@ class ReportDialog extends ModalDialog.ModalDialog {
         const tagFilters = this._reportData.tagFilters || [];
 
         for (const issue of this._reportData.issues) {
-            if (issue.time_stats && issue.time_stats.total_time_spent > 0) {
-                const labels = issue.labels || [];
+            const labels = issue.labels || [];
 
-                // Apply filters if configured
-                let matchedLabels = [];
-                if (tagFilters.length > 0) {
-                    matchedLabels = labels.filter(label => this._labelMatchesFilters(label, tagFilters));
-                } else {
-                    matchedLabels = labels;
-                }
+            let matchedLabels = [];
+            if (tagFilters.length > 0) {
+                matchedLabels = labels.filter(label => this._labelMatchesFilters(label, tagFilters));
+            } else {
+                matchedLabels = labels;
+            }
 
-                if (matchedLabels.length === 0) {
-                    // Use 'Other' or 'No label' depending on filter status
-                    const otherLabel = tagFilters.length > 0 ? this._('Other') : this._('No label');
-                    if (!issuesByLabel[otherLabel]) {
-                        issuesByLabel[otherLabel] = [];
-                    }
-                    issuesByLabel[otherLabel].push(issue);
-                } else {
-                    for (const label of matchedLabels) {
-                        if (!issuesByLabel[label]) {
-                            issuesByLabel[label] = [];
-                        }
-                        issuesByLabel[label].push(issue);
-                    }
+            if (matchedLabels.length === 0) {
+                const otherLabel = tagFilters.length > 0 ? this._('Other') : this._('No label');
+                if (!issuesByLabel[otherLabel]) issuesByLabel[otherLabel] = [];
+                issuesByLabel[otherLabel].push(issue);
+            } else {
+                for (const label of matchedLabels) {
+                    if (!issuesByLabel[label]) issuesByLabel[label] = [];
+                    issuesByLabel[label].push(issue);
                 }
             }
         }
@@ -705,7 +743,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
             md += `### ${label} (${labelTime}h)\n\n`;
 
             for (const issue of issues) {
-                const hours = (issue.time_stats.total_time_spent / 3600).toFixed(2);
+                const hours = ((this._reportData.timelogsByIssue.get(issue.iid) || 0) / 3600).toFixed(2);
                 const issueUrl = issue.web_url || '#';
                 md += `- [#${issue.iid}](${issueUrl}) - ${issue.title} *(${hours}h)*\n`;
             }
