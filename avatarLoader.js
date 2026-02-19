@@ -62,8 +62,7 @@ export class AvatarLoader {
             if (status === 200 && bytes && bytes.get_size() > 0) {
                 const gicon = Gio.BytesIcon.new(bytes);
                 this._avatarCache.set(cacheKey, gicon);
-                if (iconWidget && typeof iconWidget.is_finalized === 'function' && !iconWidget.is_finalized())
-                    iconWidget.set_gicon(gicon);
+                try { iconWidget.set_gicon(gicon); } catch(e) { /* widget destroyed */ }
             } else if (namespace) {
                 this._loadNamespaceAvatar(namespace, iconWidget, cacheKey);
             } else {
@@ -112,8 +111,7 @@ export class AvatarLoader {
             if (status === 200 && bytes && bytes.get_size() > 0) {
                 const gicon = Gio.BytesIcon.new(bytes);
                 this._avatarCache.set(cacheKey, gicon);
-                if (iconWidget && typeof iconWidget.is_finalized === 'function' && !iconWidget.is_finalized())
-                    iconWidget.set_gicon(gicon);
+                try { iconWidget.set_gicon(gicon); } catch(e) { /* widget destroyed */ }
             } else {
                 this._avatarCache.set(cacheKey, null);
             }
@@ -128,8 +126,7 @@ export class AvatarLoader {
             if (status === 200 && bytes && bytes.get_size() > 0) {
                 const gicon = Gio.BytesIcon.new(bytes);
                 this._avatarCache.set(cacheKey, gicon);
-                if (iconWidget && typeof iconWidget.is_finalized === 'function' && !iconWidget.is_finalized())
-                    iconWidget.set_gicon(gicon);
+                try { iconWidget.set_gicon(gicon); } catch(e) { /* widget destroyed */ }
             } else {
                 this._avatarCache.set(cacheKey, null);
             }
