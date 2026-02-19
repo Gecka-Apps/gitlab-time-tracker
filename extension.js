@@ -97,7 +97,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
 
         // Timer display
         this._timerLabel = new PopupMenu.PopupMenuItem('00:00:00', {reactive: false});
-        this._timerLabel.label.set_style('font-size: 18px; font-weight: bold;');
+        this._timerLabel.label.add_style_class_name('gitlab-timer-label');
         this.menu.addMenuItem(this._timerLabel);
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
