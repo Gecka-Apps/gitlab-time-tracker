@@ -437,12 +437,13 @@ class ReportDialog extends ModalDialog.ModalDialog {
         this._selectedProject = project;
         this._projectDropdownLabel.text = project.path_with_namespace;
 
-        // Update icon if available (use passed gicon or try cache)
+        // Update icon if available (use passed gicon, cache, or load)
         const cachedIcon = gicon || this._avatarLoader.getCachedAvatar(project.id);
         if (cachedIcon) {
             this._projectIcon.set_gicon(cachedIcon);
         } else {
             this._projectIcon.icon_name = 'folder-symbolic';
+            this._avatarLoader.loadProjectAvatar(project.id, project.namespace || null, this._projectIcon);
         }
 
         // Hide selector
