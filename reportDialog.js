@@ -334,9 +334,12 @@ class ReportDialog extends ModalDialog.ModalDialog {
         this._projectList.destroy_all_children();
 
         const searchText = this._projectSearchEntry.get_text().toLowerCase();
-        let filteredProjects = searchText
-            ? this._projects.filter(p => p.name.toLowerCase().includes(searchText) ||
-                                         p.path_with_namespace.toLowerCase().includes(searchText))
+        const searchWords = searchText.split(/\s+/).filter(w => w.length > 0);
+        let filteredProjects = searchWords.length > 0
+            ? this._projects.filter(p => {
+                const haystack = `${p.name} ${p.path_with_namespace}`.toLowerCase();
+                return searchWords.every(word => haystack.includes(word));
+            })
             : this._projects;
 
         // Sort alphabetically by path_with_namespace
