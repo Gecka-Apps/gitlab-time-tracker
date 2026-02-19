@@ -1,10 +1,10 @@
 # GitLab Time Tracking
 
-[<img src="https://github.com/aunetx/files_utils/raw/master/get_it_on_gnome_extensions.png" height="100" align="right">](https://extensions.gnome.org/extension/xxxx/gitlab-time-tracker/)
+[<img src="https://github.com/aunetx/files_utils/raw/master/get_it_on_gnome_extensions.png" height="100" align="right">](https://extensions.gnome.org/extension/9029/gitlab-time-tracking/)
 
 A GNOME Shell extension for tracking time spent on GitLab issues directly from your system tray.
 
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
+![Version](https://img.shields.io/github/v/release/Gecka-Apps/gitlab-time-tracker)
 ![License](https://img.shields.io/badge/license-GPL--3.0-green)
 ![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-46%20|%2047%20|%2048%20|%2049-blue)
 ![Languages](https://img.shields.io/badge/languages-4-brightgreen)
@@ -38,7 +38,7 @@ Browse and search your GitLab projects and issues with a clean, intuitive interf
 
 ### From [https://extensions.gnome.org](https://extensions.gnome.org)
 
-Visit the [extention page](https://extensions.gnome.org/extension/xxx/gitlab-time-tracker/) an click install
+Visit the [extension page](https://extensions.gnome.org/extension/9029/gitlab-time-tracking/) and click install
 
 ### From Source
 
@@ -230,24 +230,6 @@ The `build` command uses `gnome-extensions pack` which automatically:
 - Compiles GSettings schemas
 - Compiles translations from .po files
 - Creates a .zip package in the `build/` directory
-
-### Project Structure
-
-```
-gitlab-time-tracker@gecka.nc/
-├── extension.js         # Main extension logic
-├── issueSelector.js     # Project/issue selector dialog
-├── reportDialog.js      # Monthly report dialog
-├── prefs.js             # Settings UI
-├── metadata.json        # Extension metadata
-├── stylesheet.css       # Custom styles
-├── schemas/             # GSettings schema
-├── icons/               # Custom SVG icons
-├── po/                  # Translation source files
-├── locale/              # Compiled translations
-├── LICENSE              # GPL-3.0 license
-└── README.md            # This file
-```
 
 ## Contributing
 
