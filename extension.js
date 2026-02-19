@@ -344,8 +344,9 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             message,
             GLib.PRIORITY_DEFAULT,
             null,
-            (_session, _result) => {
+            (session, result) => {
                 try {
+                    session.send_and_read_finish(result);
                     if (message.status_code === 201 || message.status_code === 200) {
                         Main.notify(this._('GitLab Issues Timer'), `${this._('Time sent')}: ${duration} ${this._('on issue')} #${this._selectedIssue.iid}`);
                     } else if (message.status_code === 401 || message.status_code === 403) {
