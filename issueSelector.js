@@ -171,15 +171,13 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         this._selectedIssueWidget = null;
     }
 
-    _loadProjects() {
-        this._showOverlay(this._projectLoadingOverlay, this._('Loading projects...'));
+    _apiGet(path, overlay, loadingText, onSuccess) {
+        this._showOverlay(overlay, loadingText);
 
         const url = this._settings.get_string('gitlab-url');
         const token = this._settings.get_string('gitlab-token');
 
-        const apiUrl = `${url}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`;
-
-        const message = Soup.Message.new('GET', apiUrl);
+        const message = Soup.Message.new('GET', `${url}/api/v4${path}`);
         message.request_headers.append('PRIVATE-TOKEN', token);
 
         this._httpSession.send_and_read_async(
@@ -193,28 +191,39 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                     const response = decoder.decode(bytes.get_data());
 
                     if (message.status_code === 200) {
-                        this._projects = JSON.parse(response);
-                        this._updateProjectList();
-                        this._hideOverlay(this._projectLoadingOverlay);
-
-                        // Auto-select preselected project
-                        if (this._preselectedProject) {
-                            const sorted = [...this._projects].sort((a, b) =>
-                                a.path_with_namespace.localeCompare(b.path_with_namespace));
-                            const index = sorted.findIndex(p => p.id === this._preselectedProject.id);
-                            if (index >= 0) {
-                                const widgets = this._projectList.get_children();
-                                if (widgets[index])
-                                    this._selectProject(sorted[index], widgets[index]);
-                            }
-                        }
+                        onSuccess(JSON.parse(response));
+                        this._hideOverlay(overlay);
                     } else if (message.status_code === 401 || message.status_code === 403) {
-                        this._showOverlay(this._projectLoadingOverlay, this._('Please configure the server URL and token in preferences'));
+                        this._showOverlay(overlay, this._('Please configure the server URL and token in preferences'));
                     } else {
-                        this._showOverlay(this._projectLoadingOverlay, `${this._('Error')}: ${message.status_code}`);
+                        this._showOverlay(overlay, `${this._('Error')}: ${message.status_code}`);
                     }
                 } catch (e) {
-                    this._showOverlay(this._projectLoadingOverlay, `${this._('Error')}: ${e.message}`);
+                    this._showOverlay(overlay, `${this._('Error')}: ${e.message}`);
+                }
+            }
+        );
+    }
+
+    _loadProjects() {
+        this._apiGet(
+            '/projects?membership=true&per_page=100&order_by=last_activity_at',
+            this._projectLoadingOverlay,
+            this._('Loading projects...'),
+            (data) => {
+                this._projects = data;
+                this._updateProjectList();
+
+                // Auto-select preselected project
+                if (this._preselectedProject) {
+                    const sorted = [...this._projects].sort((a, b) =>
+                        a.path_with_namespace.localeCompare(b.path_with_namespace));
+                    const index = sorted.findIndex(p => p.id === this._preselectedProject.id);
+                    if (index >= 0) {
+                        const widgets = this._projectList.get_children();
+                        if (widgets[index])
+                            this._selectProject(sorted[index], widgets[index]);
+                    }
                 }
             }
         );
@@ -296,47 +305,22 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     _loadIssues(projectId) {
-        this._showOverlay(this._issueLoadingOverlay, this._('Loading issues...'));
+        this._apiGet(
+            `/projects/${projectId}/issues?state=opened&per_page=100`,
+            this._issueLoadingOverlay,
+            this._('Loading issues...'),
+            (data) => {
+                this._allIssues = data;
+                this._updateIssueList();
 
-        const url = this._settings.get_string('gitlab-url');
-        const token = this._settings.get_string('gitlab-token');
-
-        const apiUrl = `${url}/api/v4/projects/${projectId}/issues?state=opened&per_page=100`;
-
-        const message = Soup.Message.new('GET', apiUrl);
-        message.request_headers.append('PRIVATE-TOKEN', token);
-
-        this._httpSession.send_and_read_async(
-            message,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (session, result) => {
-                try {
-                    const bytes = session.send_and_read_finish(result);
-                    const decoder = new TextDecoder('utf-8');
-                    const response = decoder.decode(bytes.get_data());
-
-                    if (message.status_code === 200) {
-                        this._allIssues = JSON.parse(response);
-                        this._updateIssueList();
-                        this._hideOverlay(this._issueLoadingOverlay);
-
-                        // Auto-select preselected issue
-                        if (this._preselectedIssue) {
-                            const index = this._allIssues.findIndex(i => i.iid === this._preselectedIssue.iid);
-                            if (index >= 0) {
-                                const widgets = this._issueList.get_children();
-                                if (widgets[index])
-                                    this._selectIssue(this._allIssues[index], widgets[index]);
-                            }
-                        }
-                    } else if (message.status_code === 401 || message.status_code === 403) {
-                        this._showOverlay(this._issueLoadingOverlay, this._('Please configure the server URL and token in preferences'));
-                    } else {
-                        this._showOverlay(this._issueLoadingOverlay, `${this._('Error')}: ${message.status_code}`);
+                // Auto-select preselected issue
+                if (this._preselectedIssue) {
+                    const index = this._allIssues.findIndex(i => i.iid === this._preselectedIssue.iid);
+                    if (index >= 0) {
+                        const widgets = this._issueList.get_children();
+                        if (widgets[index])
+                            this._selectIssue(this._allIssues[index], widgets[index]);
                     }
-                } catch (e) {
-                    this._showOverlay(this._issueLoadingOverlay, `${this._('Error')}: ${e.message}`);
                 }
             }
         );
