@@ -382,8 +382,6 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         widget.add_style_pseudo_class('active');
     }
 
-
-
     _createLoadingOverlay() {
         // Wrapper: fills the list area, holds both the bg overlay and the spinner
         let wrapper = new St.Widget({
