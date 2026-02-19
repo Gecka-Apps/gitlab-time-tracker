@@ -230,6 +230,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     _updateProjectList() {
+        this._selectedProjectWidget = null;
         this._projectList.destroy_all_children();
 
         const searchText = this._projectSearchEntry.get_text().toLowerCase();
@@ -324,6 +325,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     _updateIssueList() {
+        this._selectedIssueWidget = null;
         this._issueList.destroy_all_children();
 
         const searchText = this._issueSearchEntry.get_text().toLowerCase();
