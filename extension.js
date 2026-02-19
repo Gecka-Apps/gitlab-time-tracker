@@ -471,13 +471,14 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             this._timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
                 if (!this._timerPaused) {
                     this._elapsedSeconds++;
+                    // Save state every 5 seconds for crash/session end recovery
+                    if (this._elapsedSeconds % 5 === 0) {
+                        this._saveTimerState();
+                    }
                 }
                 this._updateTimerDisplay();
                 return GLib.SOURCE_CONTINUE;
             });
-
-            // Clear saved state after successful restore
-            this._settings.set_string('timer-state', '{}');
 
             console.debug(`GitLab Timer: Timer restored with ${this._elapsedSeconds} seconds (paused: ${this._timerPaused})`);
         } catch (e) {
