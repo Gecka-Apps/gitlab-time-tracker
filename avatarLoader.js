@@ -104,11 +104,8 @@ export class AvatarLoader {
             fullUrl = gitlabUrl + avatarUrl;
         }
 
-        // Add token for private avatars
-        if (fullUrl.includes('/uploads/')) {
-            const separator = fullUrl.includes('?') ? '&' : '?';
-            fullUrl = `${fullUrl}${separator}private_token=${this._settings.get_string('gitlab-token')}`;
-        }
+        // Use auth header for private upload avatars
+        const needsAuth = fullUrl.includes('/uploads/');
 
         this._fetch(fullUrl, (status, bytes) => {
             if (status === 200 && bytes && bytes.get_size() > 0) {
@@ -119,7 +116,7 @@ export class AvatarLoader {
             } else {
                 this._avatarCache.set(cacheKey, null);
             }
-        }, false);
+        }, needsAuth);
     }
 
     _loadGroupAvatar(groupId, iconWidget, cacheKey) {
