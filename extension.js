@@ -505,7 +505,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         }
         // Update issue label
         if (this._selectedIssue) {
-            this._issueLabel.label.text = `#${this._selectedIssue.iid} - ${this._selectedIssue.title}`;
+            this._issueLabel.label.text = `${this._('Issue')}: #${this._selectedIssue.iid} - ${this._selectedIssue.title.substring(0, 40)}...`;
             this._openIssueButton.visible = true;
         }
     }
