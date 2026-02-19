@@ -381,7 +381,8 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
             path_with_namespace: this._selectedProject.path_with_namespace,
             name: this._selectedProject.name,
             avatar_url: this._selectedProject.avatar_url || null,
-            web_url: this._selectedProject.web_url || null
+            web_url: this._selectedProject.web_url || null,
+            namespace: this._selectedProject.namespace || null
         } : null;
 
         // Build issue object if selected
