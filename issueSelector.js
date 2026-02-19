@@ -427,11 +427,25 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
 
     _showOverlay(overlay, text) {
         overlay._label.text = text;
-        overlay.show();
-        overlay._spinner.play();
+        // If already visible, just update the text
+        if (overlay.visible) return;
+        if (overlay._delayId) {
+            GLib.source_remove(overlay._delayId);
+            overlay._delayId = null;
+        }
+        overlay._delayId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
+            overlay._delayId = null;
+            overlay.show();
+            overlay._spinner.play();
+            return GLib.SOURCE_REMOVE;
+        });
     }
 
     _hideOverlay(overlay) {
+        if (overlay._delayId) {
+            GLib.source_remove(overlay._delayId);
+            overlay._delayId = null;
+        }
         overlay._spinner.stop();
         overlay.hide();
     }
@@ -447,8 +461,8 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     destroy() {
-        this._projectLoadingOverlay._spinner.stop();
-        this._issueLoadingOverlay._spinner.stop();
+        this._hideOverlay(this._projectLoadingOverlay);
+        this._hideOverlay(this._issueLoadingOverlay);
         this._httpSession.abort();
         super.destroy();
     }
