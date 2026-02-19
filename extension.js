@@ -152,7 +152,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
                 this._selectedProject = project;
                 this._selectedIssue = issue;
                 this._projectLabel.label.text = `${this._('Project')}: ${project.path_with_namespace}`;
-                this._issueLabel.label.text = `${this._('Issue')}: #${issue.iid} - ${issue.title.substring(0, 40)}...`;
+                this._issueLabel.label.text = `${this._('Issue')}: #${issue.iid} - ${issue.title.length > 40 ? issue.title.substring(0, 40) + '...' : issue.title}`;
 
                 // Show the browser open buttons
                 this._openProjectButton.visible = true;
@@ -506,7 +506,7 @@ class GitLabIssuesIndicator extends PanelMenu.Button {
         }
         // Update issue label
         if (this._selectedIssue) {
-            this._issueLabel.label.text = `${this._('Issue')}: #${this._selectedIssue.iid} - ${this._selectedIssue.title.substring(0, 40)}...`;
+            this._issueLabel.label.text = `${this._('Issue')}: #${this._selectedIssue.iid} - ${this._selectedIssue.title.length > 40 ? this._selectedIssue.title.substring(0, 40) + '...' : this._selectedIssue.title}`;
             this._openIssueButton.visible = true;
         }
     }
