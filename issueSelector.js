@@ -5,6 +5,7 @@ import GLib from 'gi://GLib';
 import Soup from 'gi://Soup';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Animation from 'resource:///org/gnome/shell/ui/animation.js';
 
 import {AvatarLoader} from './avatarLoader.js';
 
@@ -68,11 +69,19 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         });
         projectBox.add_child(this._projectSearchEntry);
 
-        // Project list container with scrolling
-        let projectScrollView = new St.ScrollView({
+        // Project list container with overlay support
+        let projectContainer = new St.Widget({
+            layout_manager: new Clutter.BinLayout(),
             style: 'border: 1px solid #555; border-radius: 5px; height: 180px;',
+            x_expand: true,
+            clip_to_allocation: true
+        });
+
+        let projectScrollView = new St.ScrollView({
             hscrollbar_policy: St.PolicyType.NEVER,
-            vscrollbar_policy: St.PolicyType.AUTOMATIC
+            vscrollbar_policy: St.PolicyType.AUTOMATIC,
+            x_expand: true,
+            y_expand: true
         });
 
         this._projectList = new St.BoxLayout({
@@ -80,7 +89,12 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
             style_class: 'gitlab-project-list'
         });
         projectScrollView.add_child(this._projectList);
-        projectBox.add_child(projectScrollView);
+        projectContainer.add_child(projectScrollView);
+
+        this._projectLoadingOverlay = this._createLoadingOverlay();
+        projectContainer.add_child(this._projectLoadingOverlay);
+
+        projectBox.add_child(projectContainer);
 
         content.add_child(projectBox);
 
@@ -108,11 +122,19 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         });
         issueBox.add_child(this._issueSearchEntry);
 
-        // Issue list container with scrolling
-        let issueScrollView = new St.ScrollView({
+        // Issue list container with overlay support
+        let issueContainer = new St.Widget({
+            layout_manager: new Clutter.BinLayout(),
             style: 'border: 1px solid #555; border-radius: 5px; height: 180px;',
+            x_expand: true,
+            clip_to_allocation: true
+        });
+
+        let issueScrollView = new St.ScrollView({
             hscrollbar_policy: St.PolicyType.NEVER,
-            vscrollbar_policy: St.PolicyType.AUTOMATIC
+            vscrollbar_policy: St.PolicyType.AUTOMATIC,
+            x_expand: true,
+            y_expand: true
         });
 
         this._issueList = new St.BoxLayout({
@@ -120,16 +142,14 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
             style_class: 'gitlab-issue-list'
         });
         issueScrollView.add_child(this._issueList);
-        issueBox.add_child(issueScrollView);
+        issueContainer.add_child(issueScrollView);
+
+        this._issueLoadingOverlay = this._createLoadingOverlay();
+        issueContainer.add_child(this._issueLoadingOverlay);
+
+        issueBox.add_child(issueContainer);
 
         content.add_child(issueBox);
-
-        // Loading indicator
-        this._loadingLabel = new St.Label({
-            text: this._('Loading...'),
-            style: 'font-style: italic; color: #999;'
-        });
-        content.add_child(this._loadingLabel);
 
         this.contentLayout.add_child(content);
 
@@ -152,7 +172,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     _loadProjects() {
-        this._showLoading(this._('Loading projects...'));
+        this._showOverlay(this._projectLoadingOverlay, this._('Loading projects...'));
 
         const url = this._settings.get_string('gitlab-url');
         const token = this._settings.get_string('gitlab-token');
@@ -175,7 +195,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                     if (message.status_code === 200) {
                         this._projects = JSON.parse(response);
                         this._updateProjectList();
-                        this._hideLoading();
+                        this._hideOverlay(this._projectLoadingOverlay);
 
                         // Auto-select preselected project
                         if (this._preselectedProject) {
@@ -189,12 +209,12 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                             }
                         }
                     } else if (message.status_code === 401 || message.status_code === 403) {
-                        this._showLoading(this._('Please configure the server URL and token in preferences'));
+                        this._showOverlay(this._projectLoadingOverlay, this._('Please configure the server URL and token in preferences'));
                     } else {
-                        this._showLoading(`${this._('Error')}: ${message.status_code}`);
+                        this._showOverlay(this._projectLoadingOverlay, `${this._('Error')}: ${message.status_code}`);
                     }
                 } catch (e) {
-                    this._showLoading(`${this._('Error')}: ${e.message}`);
+                    this._showOverlay(this._projectLoadingOverlay, `${this._('Error')}: ${e.message}`);
                 }
             }
         );
@@ -276,7 +296,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     _loadIssues(projectId) {
-        this._showLoading(this._('Loading issues...'));
+        this._showOverlay(this._issueLoadingOverlay, this._('Loading issues...'));
 
         const url = this._settings.get_string('gitlab-url');
         const token = this._settings.get_string('gitlab-token');
@@ -299,7 +319,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                     if (message.status_code === 200) {
                         this._allIssues = JSON.parse(response);
                         this._updateIssueList();
-                        this._hideLoading();
+                        this._hideOverlay(this._issueLoadingOverlay);
 
                         // Auto-select preselected issue
                         if (this._preselectedIssue) {
@@ -311,12 +331,12 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
                             }
                         }
                     } else if (message.status_code === 401 || message.status_code === 403) {
-                        this._showLoading(this._('Please configure the server URL and token in preferences'));
+                        this._showOverlay(this._issueLoadingOverlay, this._('Please configure the server URL and token in preferences'));
                     } else {
-                        this._showLoading(`${this._('Error')}: ${message.status_code}`);
+                        this._showOverlay(this._issueLoadingOverlay, `${this._('Error')}: ${message.status_code}`);
                     }
                 } catch (e) {
-                    this._showLoading(`${this._('Error')}: ${e.message}`);
+                    this._showOverlay(this._issueLoadingOverlay, `${this._('Error')}: ${e.message}`);
                 }
             }
         );
@@ -385,13 +405,55 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         this._updateIssueList();
     }
 
-    _showLoading(text) {
-        this._loadingLabel.text = text;
-        this._loadingLabel.show();
+    _createLoadingOverlay() {
+        // Wrapper: fills the list area, holds both the bg overlay and the spinner
+        let wrapper = new St.Widget({
+            layout_manager: new Clutter.BinLayout(),
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+
+        // Background overlay
+        wrapper._bg = new St.Widget({
+            style_class: 'popup-menu-content',
+            opacity: 200,
+            x_expand: true,
+            y_expand: true,
+        });
+        wrapper.add_child(wrapper._bg);
+
+        // Spinner + label centered on top
+        let content = new St.BoxLayout({
+            vertical: false,
+            style: 'padding: 8px;',
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+
+        wrapper._spinner = new Animation.Spinner(16);
+        content.add_child(wrapper._spinner);
+
+        wrapper._label = new St.Label({
+            style: 'font-style: italic; margin-left: 8px;',
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        content.add_child(wrapper._label);
+
+        wrapper.add_child(content);
+
+        wrapper.hide();
+        return wrapper;
     }
 
-    _hideLoading() {
-        this._loadingLabel.hide();
+    _showOverlay(overlay, text) {
+        overlay._label.text = text;
+        overlay.show();
+        overlay._spinner.play();
+    }
+
+    _hideOverlay(overlay) {
+        overlay._spinner.stop();
+        overlay.hide();
     }
 
     _onSelect() {
@@ -405,6 +467,8 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
     }
 
     destroy() {
+        this._projectLoadingOverlay._spinner.stop();
+        this._issueLoadingOverlay._spinner.stop();
         this._httpSession.abort();
         super.destroy();
     }
