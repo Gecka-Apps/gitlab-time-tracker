@@ -788,14 +788,17 @@ class ReportDialog extends ModalDialog.ModalDialog {
         let csv = `"Project","Month","Label","Time (hours)"\n`;
 
         const monthYear = this._formatMonthYear();
+        const csvEscape = (str) => str.replace(/"/g, '""');
+        const projectName = csvEscape(this._selectedProject.path_with_namespace);
+
         for (const [label, seconds] of Object.entries(this._reportData.timeByLabel)) {
             const hours = (seconds / 3600).toFixed(2);
-            csv += `"${this._selectedProject.path_with_namespace}","${monthYear}","${label}","${hours}"\n`;
+            csv += `"${projectName}","${monthYear}","${csvEscape(label)}","${hours}"\n`;
         }
 
         // Add total
         const totalHours = (this._reportData.totalSeconds / 3600).toFixed(2);
-        csv += `"${this._selectedProject.path_with_namespace}","${monthYear}","TOTAL","${totalHours}"\n`;
+        csv += `"${projectName}","${monthYear}","TOTAL","${totalHours}"\n`;
 
         // Save to file
         // Replace all invalid filename characters (/, \, :, *, ?, ", <, >, |)
