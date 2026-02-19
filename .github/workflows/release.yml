@@ -3,11 +3,13 @@ name: Release
 on:
   push:
     tags:
-      - 'v*' # Trigger sur les tags commençant par 'v' (ex: v1.0.0)
+      - 'v*'
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
@@ -29,22 +31,6 @@ jobs:
         mv build/gitlab-time-tracker@gecka.nc.shell-extension.zip "build/gitlab-time-tracker@gecka.nc-v${VERSION}.shell-extension.zip"
 
     - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/gitlab-time-tracker@gecka.nc-v${{ env.VERSION }}.shell-extension.zip
-        asset_name: gitlab-time-tracker@gecka.nc-v${{ env.VERSION }}.shell-extension.zip
-        asset_content_type: application/zip
+        files: build/gitlab-time-tracker@gecka.nc-v${{ env.VERSION }}.shell-extension.zip
