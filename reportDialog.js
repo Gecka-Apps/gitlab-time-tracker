@@ -117,7 +117,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
             style: 'margin-bottom: 5px;'
         });
         this._projectSearchEntry.clutter_text.connect('text-changed', () => {
-            this._filterProjects();
+            this._updateProjectList();
         });
         this._projectSelectorBox.add_child(this._projectSearchEntry);
 
@@ -399,10 +399,6 @@ class ReportDialog extends ModalDialog.ModalDialog {
             });
             this._projectList.add_child(emptyLabel);
         }
-    }
-
-    _filterProjects() {
-        this._updateProjectList();
     }
 
     _apiGet(path, onSuccess, onError = null) {

@@ -65,7 +65,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
             style: 'margin-bottom: 5px;'
         });
         this._projectSearchEntry.clutter_text.connect('text-changed', () => {
-            this._filterProjects();
+            this._updateProjectList();
         });
         projectBox.add_child(this._projectSearchEntry);
 
@@ -118,7 +118,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
             style: 'margin-bottom: 5px;'
         });
         this._issueSearchEntry.clutter_text.connect('text-changed', () => {
-            this._filterIssues();
+            this._updateIssueList();
         });
         issueBox.add_child(this._issueSearchEntry);
 
@@ -382,13 +382,7 @@ class IssueSelectorDialog extends ModalDialog.ModalDialog {
         widget.add_style_pseudo_class('active');
     }
 
-    _filterProjects() {
-        this._updateProjectList();
-    }
 
-    _filterIssues() {
-        this._updateIssueList();
-    }
 
     _createLoadingOverlay() {
         // Wrapper: fills the list area, holds both the bg overlay and the spinner
