@@ -7,6 +7,7 @@ import Soup from 'gi://Soup';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
+import * as Animation from 'resource:///org/gnome/shell/ui/animation.js';
 
 import {AvatarLoader} from './avatarLoader.js';
 
@@ -120,11 +121,19 @@ class ReportDialog extends ModalDialog.ModalDialog {
         });
         this._projectSelectorBox.add_child(this._projectSearchEntry);
 
-        // Project list with scrolling
-        let projectScrollView = new St.ScrollView({
+        // Project list with scrolling and overlay
+        let projectContainer = new St.Widget({
+            layout_manager: new Clutter.BinLayout(),
             style_class: 'popup-menu-content gitlab-report-project-list',
+            x_expand: true,
+            clip_to_allocation: true
+        });
+
+        let projectScrollView = new St.ScrollView({
             hscrollbar_policy: St.PolicyType.NEVER,
-            vscrollbar_policy: St.PolicyType.AUTOMATIC
+            vscrollbar_policy: St.PolicyType.AUTOMATIC,
+            x_expand: true,
+            y_expand: true
         });
 
         this._projectList = new St.BoxLayout({
@@ -132,7 +141,12 @@ class ReportDialog extends ModalDialog.ModalDialog {
             style_class: 'gitlab-project-list'
         });
         projectScrollView.add_child(this._projectList);
-        this._projectSelectorBox.add_child(projectScrollView);
+        projectContainer.add_child(projectScrollView);
+
+        this._projectLoadingOverlay = this._createLoadingOverlay();
+        projectContainer.add_child(this._projectLoadingOverlay);
+
+        this._projectSelectorBox.add_child(projectContainer);
 
         projectBox.add_child(this._projectSelectorBox);
 
@@ -179,11 +193,19 @@ class ReportDialog extends ModalDialog.ModalDialog {
         dateBoxContainer.add_child(dateBox);
         content.add_child(dateBoxContainer);
 
-        // Chart area
-        this._chartContainer = new St.ScrollView({
+        // Chart area with overlay
+        let chartWrapper = new St.Widget({
+            layout_manager: new Clutter.BinLayout(),
             style_class: 'popup-menu-content gitlab-chart-container',
+            x_expand: true,
+            clip_to_allocation: true
+        });
+
+        this._chartContainer = new St.ScrollView({
             hscrollbar_policy: St.PolicyType.NEVER,
-            vscrollbar_policy: St.PolicyType.AUTOMATIC
+            vscrollbar_policy: St.PolicyType.AUTOMATIC,
+            x_expand: true,
+            y_expand: true
         });
 
         this._chartBox = new St.BoxLayout({
@@ -191,7 +213,12 @@ class ReportDialog extends ModalDialog.ModalDialog {
             style: 'padding: 20px;'
         });
         this._chartContainer.add_child(this._chartBox);
-        content.add_child(this._chartContainer);
+        chartWrapper.add_child(this._chartContainer);
+
+        this._chartLoadingOverlay = this._createLoadingOverlay();
+        chartWrapper.add_child(this._chartLoadingOverlay);
+
+        content.add_child(chartWrapper);
 
         // Summary section
         this._summaryBox = new St.BoxLayout({
@@ -207,14 +234,6 @@ class ReportDialog extends ModalDialog.ModalDialog {
         this._summaryBox.add_child(this._summaryLabel);
 
         content.add_child(this._summaryBox);
-
-        // Loading indicator
-        this._loadingLabel = new St.Label({
-            text: this._('Loading...'),
-            style_class: 'gitlab-empty-label'
-        });
-        this._loadingLabel.hide();
-        content.add_child(this._loadingLabel);
 
         this.contentLayout.add_child(content);
 
@@ -273,42 +292,27 @@ class ReportDialog extends ModalDialog.ModalDialog {
     }
 
     _loadProjects() {
-        const url = this._settings.get_string('gitlab-url');
-        const token = this._settings.get_string('gitlab-token');
+        this._showOverlay(this._projectLoadingOverlay, this._('Loading projects...'));
 
-        const apiUrl = `${url}/api/v4/projects?membership=true&per_page=100&order_by=last_activity_at`;
+        this._apiGet(
+            '/projects?membership=true&per_page=100&order_by=last_activity_at',
+            (data) => {
+                this._projects = data;
+                this._hideOverlay(this._projectLoadingOverlay);
 
-        const message = Soup.Message.new('GET', apiUrl);
-        message.request_headers.append('PRIVATE-TOKEN', token);
-
-        this._httpSession.send_and_read_async(
-            message,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (session, result) => {
-                try {
-                    const bytes = session.send_and_read_finish(result);
-                    const decoder = new TextDecoder('utf-8');
-                    const response = decoder.decode(bytes.get_data());
-
-                    if (message.status_code === 200) {
-                        this._projects = JSON.parse(response);
-
-                        // If a project was preselected, select it
-                        if (this._preselectedProject) {
-                            const project = this._projects.find(p => p.id === this._preselectedProject.id);
-                            if (project) {
-                                this._selectProject(project, null);
-                            }
-                        }
-                    } else if (message.status_code === 401 || message.status_code === 403) {
-                        Main.notify(this._('Error'), this._('Please configure the server URL and token in preferences'));
-                    } else {
-                        Main.notify(this._('Error'), `${this._('Unable to load projects')}: ${message.status_code}`);
+                // If a project was preselected, select it
+                if (this._preselectedProject) {
+                    const project = this._projects.find(p => p.id === this._preselectedProject.id);
+                    if (project) {
+                        this._selectProject(project, null);
                     }
-                } catch (e) {
-                    Main.notify(this._('Error'), `${this._('Error loading projects')}: ${e.message}`);
                 }
+            },
+            (error) => {
+                if (error === 401 || error === 403)
+                    this._showOverlay(this._projectLoadingOverlay, this._('Please configure the server URL and token in preferences'));
+                else
+                    this._showOverlay(this._projectLoadingOverlay, `${this._('Error')}: ${error}`);
             }
         );
     }
@@ -450,7 +454,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
     }
 
     _loadReportData() {
-        this._showLoading();
+        this._showOverlay(this._chartLoadingOverlay, this._('Loading...'));
 
         // Build date range strings without UTC conversion (avoids timezone shift)
         const month = String(this._currentMonth + 1).padStart(2, '0');
@@ -506,11 +510,10 @@ class ReportDialog extends ModalDialog.ModalDialog {
                 }
             },
             (error) => {
-                this._hideLoading();
                 if (error === 401 || error === 403)
-                    Main.notify(this._('Error'), this._('Please configure the server URL and token in preferences'));
+                    this._showOverlay(this._chartLoadingOverlay, this._('Please configure the server URL and token in preferences'));
                 else
-                    Main.notify(this._('Error'), `${this._('Unable to load report')}: ${error}`);
+                    this._showOverlay(this._chartLoadingOverlay, `${this._('Error')}: ${error}`);
             }
         );
     }
@@ -562,7 +565,7 @@ class ReportDialog extends ModalDialog.ModalDialog {
             timelogsByIssue
         };
 
-        this._hideLoading();
+        this._hideOverlay(this._chartLoadingOverlay);
         this._updateChart();
         this._updateSummary();
     }
@@ -891,15 +894,57 @@ class ReportDialog extends ModalDialog.ModalDialog {
         source.addNotification(notification);
     }
 
-    _showLoading() {
-        this._loadingLabel.show();
+    _createLoadingOverlay() {
+        let wrapper = new St.Widget({
+            layout_manager: new Clutter.BinLayout(),
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+
+        wrapper._bg = new St.Widget({
+            style_class: 'popup-menu-content',
+            opacity: 200,
+            x_expand: true,
+            y_expand: true,
+        });
+        wrapper.add_child(wrapper._bg);
+
+        let content = new St.BoxLayout({
+            vertical: false,
+            style: 'padding: 8px;',
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+
+        wrapper._spinner = new Animation.Spinner(16);
+        content.add_child(wrapper._spinner);
+
+        wrapper._label = new St.Label({
+            style: 'font-style: italic; margin-left: 8px;',
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        content.add_child(wrapper._label);
+
+        wrapper.add_child(content);
+
+        wrapper.hide();
+        return wrapper;
     }
 
-    _hideLoading() {
-        this._loadingLabel.hide();
+    _showOverlay(overlay, text) {
+        overlay._label.text = text;
+        overlay.show();
+        overlay._spinner.play();
+    }
+
+    _hideOverlay(overlay) {
+        overlay._spinner.stop();
+        overlay.hide();
     }
 
     destroy() {
+        this._projectLoadingOverlay._spinner.stop();
+        this._chartLoadingOverlay._spinner.stop();
         this._httpSession.abort();
         super.destroy();
     }
