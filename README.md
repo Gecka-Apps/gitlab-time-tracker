@@ -6,7 +6,7 @@ A GNOME Shell extension for tracking time spent on GitLab issues directly from y
 
 ![Version](https://img.shields.io/github/v/release/Gecka-Apps/gitlab-time-tracker)
 ![License](https://img.shields.io/badge/license-GPL--3.0-green)
-![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-46%20|%2047%20|%2048%20|%2049-blue)
+![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-46%20|%2047%20|%2048%20|%2049%20|%2050-blue)
 ![Languages](https://img.shields.io/badge/languages-4-brightgreen)
 
 ## Features
@@ -165,7 +165,7 @@ The extension automatically detects your system language and displays in:
 
 ## Compatibility
 
-- **GNOME Shell**: 46, 47, 48, 49
+- **GNOME Shell**: 46, 47, 48, 49, 50
 - **GitLab**: Any version with API v4
 - **Operating Systems**: Linux distributions with GNOME Shell
 

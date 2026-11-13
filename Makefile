@@ -14,7 +14,7 @@ help:
 	@echo "  pot         - Update translation templates and merge with existing translations"
 	@echo "  clean       - Clean build artifacts"
 	@echo "  remove      - Remove installed extension"
-	@echo "  test-shell  - Test extension in nested GNOME Shell"
+	@echo "  test-shell  - Test extension in a GNOME Shell devkit session"
 	@echo "  test-prefs  - Test extension preferences"
 	@echo "  help        - Show this help message"
 
@@ -116,12 +116,12 @@ pot:
 
 
 test-shell: install
-	@echo "Starting nested GNOME Shell for testing..."
+	@echo "Starting GNOME Shell devkit session for testing..."
 	@echo "Press Ctrl+C to exit"
 	env GNOME_SHELL_SLOWDOWN_FACTOR=2 \
 		MUTTER_DEBUG_DUMMY_MODE_SPECS=1500x1000 \
 		MUTTER_DEBUG_DUMMY_MONITOR_SCALES=1 \
-		dbus-run-session -- gnome-shell --nested --wayland
+		dbus-run-session -- gnome-shell --devkit --wayland
 
 
 test-prefs: install
